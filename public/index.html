@@ -1,0 +1,2635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DataWave Solutions — Company Database</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="stylesheet.css"/>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Data<span>Wave</span><br><span class="solutions">Solutions</span></h1>
+    <p>Company Database</p>
+  </div>
+  <div class="sidebar-body">
+    <button class="sidebar-nav-btn active" id="nav-warranty" onclick="showPage('warranty')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      <span>Warranty Records</span>
+    </button>
+    <button class="sidebar-nav-btn" id="nav-sc" onclick="showPage('sc')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      <span>Screws &amp; Connectors</span>
+    </button>
+    <button class="sidebar-nav-btn" id="nav-pp" onclick="showPage('pp')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+      <span>Product Prices</span>
+    </button>
+    <button class="sidebar-nav-btn" id="nav-cp" onclick="showPage('cp')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span>Computer Peripherals</span>
+    </button>
+    <button class="sidebar-nav-btn" id="nav-transactions" onclick="showPage('transactions')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>
+      <span>Transactions</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE: WARRANTY RECORDS                                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<main class="main" id="page-warranty">
+  <div class="page-header">
+    <h2 class="page-title">Warranty Records</h2>
+    <button class="btn btn-primary" onclick="openModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Record
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card" id="sc-all" onclick="setFilter('')">
+      <div class="stat-label">Total</div>
+      <div class="stat-value sv-def" id="st-total">—</div>
+    </div>
+    <div class="stat-card" id="sc-active" onclick="setFilter('active')">
+      <div class="stat-label">Active</div>
+      <div class="stat-value sv-g" id="st-active">—</div>
+    </div>
+    <div class="stat-card" id="sc-soon" onclick="setFilter('expiring_soon')">
+      <div class="stat-label">Expiring Soon</div>
+      <div class="stat-value sv-y" id="st-soon">—</div>
+    </div>
+    <div class="stat-card" id="sc-exp" onclick="setFilter('expired')">
+      <div class="stat-label">Expired</div>
+      <div class="stat-value sv-r" id="st-exp">—</div>
+    </div>
+    <div class="stat-card" id="sc-dev">
+      <div class="stat-label">Total Devices</div>
+      <div class="stat-value sv-b" id="st-dev">—</div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="search-input" id="search" placeholder="Search name, address, or serial number…" oninput="loadRecords()" />
+    </div>
+    <select class="filter-select" id="sup-filter" onchange="loadRecords()">
+      <option value="">All Suppliers</option>
+      <option value="Prowatcher">Prowatcher</option>
+      <option value="Amax">Amax</option>
+    </select>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Purchaser</th>
+          <th>Purchase Date</th>
+          <th>Supplier</th>
+          <th>Devices</th>
+          <th>Service Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE: SCREWS & CONNECTORS                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<main class="main hidden" id="page-sc">
+  <div class="page-header">
+    <h2 class="page-title">Screws &amp; Connectors</h2>
+    <button class="btn btn-primary" id="sc-add-item-btn" onclick="openScItemModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Item
+    </button>
+  </div>
+
+  <!-- SC TABS -->
+  <div class="sc-tabs">
+    <button class="sc-tab active" id="sct-inventory" onclick="showScTab('inventory')">Inventory</button>
+    <button class="sc-tab" id="sct-archive" onclick="showScTab('archive')">
+      Archive
+      <span class="sc-tab-badge hidden" id="sct-archive-badge">0</span>
+    </button>
+    <button class="sc-tab" id="sct-log" onclick="showScTab('log')">Activity Log</button>
+  </div>
+
+  <!-- TAB: INVENTORY -->
+  <div id="sc-tab-inventory">
+    <!-- SC STATS -->
+    <div class="stats-grid sc-stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Items</div>
+        <div class="stat-value sv-def" id="sc-st-items">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Qty in Stock</div>
+        <div class="stat-value sv-b" id="sc-st-qty">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Stock Value</div>
+        <div class="stat-value sv-g" id="sc-st-value">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Value Taken This Month</div>
+        <div class="stat-value sv-y" id="sc-st-month">—</div>
+      </div>
+    </div>
+
+    <div class="filters" style="margin-bottom:14px">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="sc-search" placeholder="Search by name or size…" oninput="filterScItems()" />
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Size</th>
+            <th>Qty in Stock</th>
+            <th>Unit Price</th>
+            <th>Total Value</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="sc-tbody">
+          <tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: ARCHIVE -->
+  <div id="sc-tab-archive" class="hidden">
+    <div class="archive-notice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      Hidden items are stored here. Restore them to bring them back to inventory.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Size</th>
+            <th>Last Qty</th>
+            <th>Unit Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="sc-archive-tbody">
+          <tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: ACTIVITY LOG -->
+  <div id="sc-tab-log" class="hidden">
+  <!-- TAKE/ADD LOG -->
+  <div class="log-header">
+    <div class="sc-section-title" style="margin:0">Stock Activity Log</div>
+    <div class="log-filters">
+      <div class="log-type-toggle">
+        <button class="log-type-btn active" id="lf-all"  onclick="setLogType('')">All</button>
+        <button class="log-type-btn"        id="lf-add"  onclick="setLogType('add')">Add</button>
+        <button class="log-type-btn"        id="lf-take" onclick="setLogType('take')">Take</button>
+      </div>
+      <select class="filter-select log-period-sel" id="log-period" onchange="onLogPeriodChange()">
+        <option value="">All Time</option>
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+        <option value="custom">Custom Range…</option>
+      </select>
+      <div class="log-custom-range hidden" id="log-custom-range">
+        <input type="date" class="fi log-date-input" id="log-date-from" onchange="renderLog()" />
+        <span style="color:var(--text3);font-size:0.8rem">to</span>
+        <input type="date" class="fi log-date-input" id="log-date-to" onchange="renderLog()" />
+      </div>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Item</th>
+          <th>Size</th>
+          <th>Qty</th>
+          <th>Unit Price</th>
+          <th>Total Price</th>
+          <th>Date &amp; Time</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="sc-takes-tbody">
+        <tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="log-pagination" id="log-pagination"></div>
+  </div><!-- end sc-tab-log -->
+</main>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE: PRODUCT PRICES                                        -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<main class="main hidden" id="page-pp">
+  <div class="page-header">
+    <h2 class="page-title">Product Prices</h2>
+    <button class="btn btn-primary" id="pp-add-btn" onclick="openPpModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Product
+    </button>
+  </div>
+
+  <!-- PP TABS -->
+  <div class="sc-tabs">
+    <button class="sc-tab active" id="ppt-active" onclick="showPpTab('active')">Products</button>
+    <button class="sc-tab" id="ppt-archive" onclick="showPpTab('archive')">
+      Archive
+      <span class="sc-tab-badge hidden" id="ppt-archive-badge">0</span>
+    </button>
+  </div>
+
+  <!-- TAB: PRODUCTS -->
+  <div id="pp-tab-active">
+    <!-- FILTERS -->
+    <div class="filters" style="margin-bottom:16px">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="pp-search" placeholder="Search model or code…" oninput="loadPpItems()" />
+      </div>
+      <select class="filter-select" id="pp-type-filter" onchange="loadPpItems()">
+        <option value="">All Types</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="pp-table">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Supplier Price</th>
+            <th>20% Markup</th>
+            <th>25% Markup</th>
+            <th>30% Markup</th>
+            <th class="pp-custom-th pp-custom-th-edit">
+              Custom&nbsp;(<input type="number" id="pp-global-markup" class="pp-th-input" value="35" min="0" step="0.1" oninput="onGlobalMarkupChange()" title="Type a markup %" />%)
+            </th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="pp-tbody">
+          <tr><td colspan="9"><div class="loading"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="log-pagination" id="pp-pagination"></div>
+  </div>
+
+  <!-- TAB: ARCHIVE -->
+  <div id="pp-tab-archive" class="hidden">
+    <div class="archive-notice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      Hidden products are stored here. Restore them to bring them back.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Supplier Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="pp-archive-tbody">
+          <tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE: COMPUTER PERIPHERALS                                  -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<main class="main hidden" id="page-cp">
+  <div class="page-header">
+    <h2 class="page-title">Computer Peripherals</h2>
+    <button class="btn btn-primary" id="cp-add-item-btn" onclick="openCpItemModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Item
+    </button>
+  </div>
+  <div class="sc-tabs">
+    <button class="sc-tab active" id="cpt-inventory" onclick="showCpTab('inventory')">Inventory</button>
+    <button class="sc-tab" id="cpt-archive" onclick="showCpTab('archive')">Archive<span class="sc-tab-badge hidden" id="cpt-archive-badge">0</span></button>
+    <button class="sc-tab" id="cpt-log" onclick="showCpTab('log')">Activity Log</button>
+  </div>
+  <div id="cp-tab-inventory">
+    <div class="stats-grid sc-stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Items</div><div class="stat-value sv-def" id="cp-st-items">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total Qty in Stock</div><div class="stat-value sv-b" id="cp-st-qty">—</div></div>
+      <div class="stat-card"><div class="stat-label">Stock Value</div><div class="stat-value sv-g" id="cp-st-value">—</div></div>
+      <div class="stat-card"><div class="stat-label">Value Taken This Month</div><div class="stat-value sv-y" id="cp-st-month">—</div></div>
+    </div>
+    <div class="filters" style="margin-bottom:16px">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="cp-search" placeholder="Search model or code…" oninput="filterCpItems()" />
+      </div>
+      <select class="filter-select" id="cp-type-filter" onchange="filterCpItems()">
+        <option value="">All Types</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Item Name</th><th>Type</th><th>Qty in Stock</th><th>Unit Price</th><th>Total Value</th><th></th></tr></thead>
+        <tbody id="cp-tbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="cp-tab-archive" class="hidden">
+    <div class="archive-notice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      Hidden items are stored here. Restore them to bring them back to inventory.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Item Name</th><th>Type</th><th>Last Qty</th><th>Unit Price</th><th></th></tr></thead>
+        <tbody id="cp-archive-tbody"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="cp-tab-log" class="hidden">
+    <div class="log-header">
+      <div class="sc-section-title" style="margin:0">Stock Activity Log</div>
+      <div class="log-filters">
+        <div class="log-type-toggle">
+          <button class="log-type-btn active" id="cp-lf-all" onclick="setCpLogType('')">All</button>
+          <button class="log-type-btn" id="cp-lf-add" onclick="setCpLogType('add')">Add</button>
+          <button class="log-type-btn" id="cp-lf-take" onclick="setCpLogType('take')">Take</button>
+        </div>
+        <select class="filter-select log-period-sel" id="cp-log-period" onchange="onCpLogPeriodChange()">
+          <option value="">All Time</option><option value="today">Today</option>
+          <option value="week">This Week</option><option value="month">This Month</option>
+          <option value="custom">Custom Range…</option>
+        </select>
+        <div class="log-custom-range hidden" id="cp-log-custom-range">
+          <input type="date" class="fi log-date-input" id="cp-log-date-from" onchange="renderCpLog()" />
+          <span style="color:var(--text3);font-size:0.8rem">to</span>
+          <input type="date" class="fi log-date-input" id="cp-log-date-to" onchange="renderCpLog()" />
+        </div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Type</th><th>Item</th><th>Type</th><th>Qty</th><th>Unit Price</th><th>Total Price</th><th>Date &amp; Time</th><th></th></tr></thead>
+        <tbody id="cp-takes-tbody"><tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+      </table>
+    </div>
+    <div class="log-pagination" id="cp-log-pagination"></div>
+  </div>
+</main>
+
+<!-- PAGE: TRANSACTIONS -->
+<main class="main hidden" id="page-transactions">
+  <div class="page-header">
+    <h2 class="page-title">Transactions</h2>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+      <select class="filter-select" id="tx-category-filter" onchange="onTxCategoryFilterChange()">
+        <option value="">All Categories</option>
+      </select>
+      <button class="btn btn-ghost" onclick="openTxCategoryManageModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Manage Categories
+      </button>
+      <button class="btn btn-primary" onclick="openTxModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Transaction
+      </button>
+    </div>
+  </div>
+
+  <div class="tx-range-label" id="tx-category-label" style="margin:-6px 0 14px">Showing all categories</div>
+
+  <div class="stats-grid tx-stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Daily Earnings</div>
+      <div class="stat-value sv-g" id="tx-daily-income">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Daily Expenses</div>
+      <div class="stat-value sv-r" id="tx-daily-expenses">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Daily Net Profit</div>
+      <div class="stat-value sv-b" id="tx-daily-net">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Earnings</div>
+      <div class="stat-value sv-g" id="tx-month-income">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Expenses</div>
+      <div class="stat-value sv-r" id="tx-month-expenses">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Net Profit</div>
+      <div class="stat-value sv-b" id="tx-month-net">—</div>
+    </div>
+  </div>
+
+  <div class="tx-panel">
+    <div class="log-header">
+      <div>
+        <div class="sc-section-title" style="margin:0 0 6px">Historical Cash Flow</div>
+        <div class="tx-range-label" id="tx-range-label">This month</div>
+      </div>
+      <div class="log-filters">
+        <select class="filter-select log-period-sel" id="tx-period" onchange="onTxPeriodChange()">
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month" selected>Month</option>
+          <option value="all">All Time</option>
+          <option value="custom">Custom Range</option>
+        </select>
+        <div class="log-custom-range" id="tx-date-controls">
+          <input type="date" class="fi log-date-input" id="tx-date-from" onchange="loadTransactions()" />
+          <span style="color:var(--text3);font-size:0.8rem">to</span>
+          <input type="date" class="fi log-date-input" id="tx-date-to" onchange="loadTransactions()" />
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid tx-range-grid">
+      <div class="stat-card">
+        <div class="stat-label">Range Earnings</div>
+        <div class="stat-value sv-g" id="tx-range-income">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Range Expenses</div>
+        <div class="stat-value sv-r" id="tx-range-expenses">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Range Net Profit</div>
+        <div class="stat-value sv-b" id="tx-range-net">—</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tx-tbody">
+          <tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="log-pagination" id="tx-pagination"></div>
+  </div>
+</main>
+
+<!-- TRANSACTION MODAL -->
+<div class="overlay" id="tx-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="tx-modal-title">Add Transaction</h3>
+      <button class="close-btn" onclick="closeTxModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg">
+          <label>Type</label>
+          <select class="fs" id="tx-f-type">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Date</label>
+          <input type="date" class="fi" id="tx-f-date" />
+        </div>
+        <div class="fg">
+          <label>Amount (₱)</label>
+          <input type="number" class="fi" id="tx-f-amount" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="fg">
+          <label>Category</label>
+          <div style="display:flex; gap:6px">
+            <select class="fs" id="tx-f-category" style="flex:1"></select>
+            <button type="button" class="btn btn-ghost" style="padding:0 12px" onclick="quickAddTxCategory()" title="Add new category">+</button>
+          </div>
+        </div>
+        <div class="fg full">
+          <label>Description</label>
+          <textarea class="fta" id="tx-f-description" placeholder="Short note"></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeTxModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTransaction()">Save Transaction</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE TRANSACTION CATEGORIES MODAL -->
+<div class="overlay" id="tx-cat-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-hd">
+      <h3 class="modal-title">Manage Categories</h3>
+      <button class="close-btn" onclick="closeTxCategoryManageModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex; gap:8px; margin-bottom:16px">
+        <input type="text" class="fi" id="tx-cat-new-name" placeholder="e.g. Hikvision, Dahua, Uniview" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault(); addTxCategory();}" />
+        <button class="btn btn-primary" onclick="addTxCategory()">Add</button>
+      </div>
+      <div class="tx-cat-list" id="tx-cat-list">
+        <div class="loading"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="cp-item-modal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="cp-item-modal-title">Add Item</h3>
+      <button class="close-btn" onclick="closeCpItemModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Item Name</label><input type="text" class="fi" id="cp-f-name" placeholder="e.g. USB-A Cable" /></div>
+        <div class="fg"><label>Type</label><input type="text" class="fi" id="cp-f-size" placeholder="e.g. USB Hub, HDMI Cable" /></div>
+        <div class="fg" id="cp-qty-row"><label>Initial Qty</label><input type="number" class="fi" id="cp-f-qty" placeholder="0" min="0" /></div>
+        <div class="fg full"><label>Unit Price (₱)</label><input type="number" class="fi" id="cp-f-price" placeholder="0.00" min="0" step="0.01" /></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeCpItemModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCpItem()">Save Item</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CP ADD STOCK MODAL -->
+<div class="overlay" id="cp-add-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd">
+      <h3 class="modal-title">Add Stock</h3>
+      <button class="close-btn" onclick="closeCpAddModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="take-item-info" id="cp-add-item-info"></div>
+      <div class="fg" style="margin-top:16px"><label>Quantity to Add</label><input type="number" class="fi" id="cp-add-qty" placeholder="1" min="1" /></div>
+      <div class="take-preview" id="cp-add-preview"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeCpAddModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmCpAdd()">Confirm Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CP TAKE MODAL -->
+<div class="overlay" id="cp-take-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd">
+      <h3 class="modal-title">Take Items</h3>
+      <button class="close-btn" onclick="closeCpTakeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="take-item-info" id="cp-take-item-info"></div>
+      <div class="fg" style="margin-top:16px"><label>Quantity to Take</label><input type="number" class="fi" id="cp-take-qty" placeholder="1" min="1" /></div>
+      <div class="take-preview" id="cp-take-preview"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeCpTakeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmCpTake()">Confirm Take</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CP HIDE CONFIRM -->
+<div class="confirm-overlay" id="cp-conf-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Hide Item?</div>
+    <div class="confirm-msg">This item will be removed from the inventory list. Its activity history will be preserved.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeCpConf()">Cancel</button>
+      <button class="btn btn-danger" id="cp-conf-ok">Hide Item</button>
+    </div>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ADD / EDIT PRODUCT PRICE MODAL                              -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="pp-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="pp-modal-title">Add Product</h3>
+      <button class="close-btn" onclick="closePpModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg">
+          <label>Device Code <span class="opt-label">(optional)</span></label>
+          <input type="text" class="fi" id="pp-f-code" placeholder="e.g. CAM-001" />
+        </div>
+        <div class="fg">
+          <label>Product Type</label>
+          <input type="text" class="fi" id="pp-f-type" placeholder="e.g. Camera, NVR, Cable…" list="pp-type-suggestions" />
+          <datalist id="pp-type-suggestions"></datalist>
+        </div>
+        <div class="fg full">
+          <label>Model</label>
+          <input type="text" class="fi" id="pp-f-model" placeholder="e.g. Hikvision DS-2CD2143G2-I" />
+        </div>
+        <div class="fg full">
+          <label>Supplier Price (₱)</label>
+          <input type="number" class="fi" id="pp-f-price" placeholder="0.00" min="0" step="0.01" oninput="updatePpPreview()" />
+        </div>
+      </div>
+      <!-- MARKUP PREVIEW -->
+      <div class="pp-preview" id="pp-preview"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closePpModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="savePpItem()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Product
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PP HIDE CONFIRM -->
+<div class="confirm-overlay" id="pp-conf-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Hide Product?</div>
+    <div class="confirm-msg">This product will be moved to the archive. You can restore it anytime.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closePpConf()">Cancel</button>
+      <button class="btn btn-danger" id="pp-conf-ok">Hide Product</button>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="modal-title">New Warranty Record</h3>
+      <button class="close-btn" onclick="closeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg">
+          <label>Name of Purchaser</label>
+          <input type="text" class="fi" id="f-name" placeholder="e.g. Juan Dela Cruz" />
+        </div>
+        <div class="fg">
+          <label>Purchase Date</label>
+          <input type="date" class="fi" id="f-date" />
+        </div>
+        <div class="fg">
+          <label>Turnover Date <span class="opt-label">(optional)</span></label>
+          <input type="date" class="fi" id="f-turnover" />
+        </div>
+        <div class="fg">
+          <!-- spacer to keep grid aligned -->
+        </div>
+        <div class="fg full">
+          <label>Address</label>
+          <textarea class="fta" id="f-addr" placeholder="Complete address…"></textarea>
+        </div>
+        <div class="fg full">
+          <label>Supplier</label>
+          <div class="sup-toggle">
+            <div class="sup-opt" id="sp-pw" onclick="selSup('Prowatcher')">Prowatcher</div>
+            <div class="sup-opt" id="sp-am" onclick="selSup('Amax')">Amax</div>
+          </div>
+        </div>
+      </div>
+      <div class="dev-section">
+        <div class="dev-section-label">Devices &amp; Serial Numbers</div>
+        <div id="dev-list"></div>
+        <button class="add-dev-btn" onclick="addDevRow()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Device
+        </button>
+      </div>
+      <div class="dev-section" style="margin-top:20px">
+        <div class="dev-section-label">Service Warranties <span class="opt-label">(optional)</span></div>
+        <div id="svc-list"></div>
+        <button class="add-dev-btn" onclick="addSvcRow()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Service
+        </button>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveRecord()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Record
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ADD / EDIT SC ITEM MODAL                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="sc-item-modal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h3 class="modal-title" id="sc-modal-title">Add Inventory Item</h3>
+      <button class="close-btn" onclick="closeScItemModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full">
+          <label>Item Name</label>
+          <input type="text" class="fi" id="sc-f-name" placeholder="e.g. M3 Phillips Head Screw" />
+        </div>
+        <div class="fg">
+          <label>Size</label>
+          <input type="text" class="fi" id="sc-f-size" placeholder="e.g. M3 x 10mm" />
+        </div>
+        <div class="fg" id="sc-qty-row">
+          <label>Initial Quantity</label>
+          <input type="number" class="fi" id="sc-f-qty" placeholder="0" min="0" />
+        </div>
+        <div class="fg full">
+          <label>Unit Price (₱)</label>
+          <input type="number" class="fi" id="sc-f-price" placeholder="0.00" min="0" step="0.01" />
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeScItemModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveScItem()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Save Item
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- ADD STOCK MODAL                                             -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="sc-add-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd">
+      <h3 class="modal-title">Add Stock</h3>
+      <button class="close-btn" onclick="closeScAddModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="take-item-info" id="add-item-info"></div>
+      <div class="fg" style="margin-top:16px">
+        <label>Quantity to Add</label>
+        <input type="number" class="fi" id="add-qty" placeholder="1" min="1" />
+      </div>
+      <div class="take-preview" id="add-preview"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeScAddModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmAdd()">Confirm Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="sc-take-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-hd">
+      <h3 class="modal-title">Take Items</h3>
+      <button class="close-btn" onclick="closeScTakeModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="take-item-info" id="take-item-info"></div>
+      <div class="fg" style="margin-top:16px">
+        <label>Quantity to Take</label>
+        <input type="number" class="fi" id="take-qty" placeholder="1" min="1" />
+      </div>
+      <div class="take-preview" id="take-preview"></div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeScTakeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="confirmTake()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Confirm Take
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL -->
+<div class="det-overlay" id="det-overlay">
+  <div class="det-panel">
+    <div class="det-hd">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div class="det-name" id="d-name"></div>
+          <div class="det-meta" id="d-meta"></div>
+        </div>
+        <button class="close-btn" onclick="closeDet()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="det-body">
+      <div class="det-info" id="d-info"></div>
+      <div class="dev-cards-title" id="d-dev-title"></div>
+      <div id="d-devs"></div>
+      <div id="d-svc-warranties"></div>
+      <div class="det-actions">
+        <button class="btn btn-ghost" onclick="editFromDet()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <button class="btn btn-danger" onclick="deleteFromDet()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM -->
+<div class="confirm-overlay" id="conf-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Delete Record?</div>
+    <div class="confirm-msg">This permanently removes the warranty record and all its devices. This cannot be undone.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeConf()">Cancel</button>
+      <button class="btn btn-danger" id="conf-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- SC DELETE CONFIRM -->
+<div class="confirm-overlay" id="sc-conf-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Hide Item?</div>
+    <div class="confirm-msg">This item will be removed from the inventory list. Its stock activity history will be preserved.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" onclick="closeScConf()">Cancel</button>
+      <button class="btn btn-danger" id="sc-conf-ok">Hide Item</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="toast-icon"></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script>
+const API = '';
+let editingId = null;
+let selSupplier = 'Prowatcher';
+let detId = null;
+let statusFilter = '';
+let devCnt = 0;
+
+// SC state
+let scEditingId = null;
+let scTakeItem = null;
+
+// Transaction state
+let txEditingId = null;
+let allTransactions = [];
+let txPage = 1;
+const TX_PAGE_SIZE = 15;
+
+// ── SC TABS ──────────────────────────────────────────────────
+let scCurrentTab = 'inventory';
+function showScTab(tab) {
+  scCurrentTab = tab;
+  ['inventory','archive','log'].forEach(t => {
+    document.getElementById(`sc-tab-${t}`).classList.toggle('hidden', t !== tab);
+    document.getElementById(`sct-${t}`).classList.toggle('active', t === tab);
+  });
+  // Show/hide Add Item button — not relevant in log or archive
+  document.getElementById('sc-add-item-btn').classList.toggle('hidden', tab !== 'inventory');
+  if (tab === 'archive') loadScArchive();
+  if (tab === 'log') { loadScTakes(); }
+}
+
+// ── PAGE NAV ──────────────────────────────────────────────────
+function showPage(page) {
+  ['warranty','sc','pp','cp','transactions'].forEach(p => {
+    document.getElementById(`page-${p}`).classList.toggle('hidden', p !== page);
+    document.getElementById(`nav-${p}`).classList.toggle('active', p === page);
+  });
+  if (page === 'sc') { showScTab('inventory'); loadScItems(); loadScStats(); }
+  if (page === 'pp') { showPpTab('active'); loadPpItems(); }
+  if (page === 'cp') { showCpTab('inventory'); loadCpItems(); loadCpStats(); }
+  if (page === 'transactions') { loadTxCategories(); loadTransactions(); }
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('f-date').value = today();
+  document.getElementById('tx-date-from').value = today();
+  document.getElementById('tx-date-to').value = today();
+  document.getElementById('tx-f-date').value = today();
+  onTxPeriodChange(false);
+  loadTxCategories();
+  loadStats();
+  loadRecords();
+  // take qty preview
+  document.getElementById('take-qty').addEventListener('input', updateTakePreview);
+});
+
+function today() { return new Date().toISOString().split('T')[0]; }
+function fmtDate(s) {
+  if (!s) return '—';
+  const d = new Date(s + 'T00:00:00');
+  return d.toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' });
+}
+function fmtDateTime(s) {
+  if (!s) return '—';
+  // SQLite datetime('now') stores UTC without Z — append it so JS parses correctly
+  const utc = s.replace(' ', 'T') + (s.includes('+') || s.endsWith('Z') ? '' : 'Z');
+  const d = new Date(utc);
+  return d.toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12: true });
+}
+function fmtPeso(n) { return '₱' + Number(n).toLocaleString('en-PH', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── WARRANTY STATS ────────────────────────────────────────────
+function setMoney(id, value, net=false) {
+  const el = document.getElementById(id);
+  el.textContent = fmtPeso(value || 0);
+  if (net) {
+    el.classList.toggle('sv-g', Number(value) >= 0);
+    el.classList.toggle('sv-r', Number(value) < 0);
+    el.classList.toggle('sv-b', false);
+  }
+}
+
+function monthStartString(d=new Date()) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-01`;
+}
+
+function onTxPeriodChange(shouldLoad=true) {
+  const period = document.getElementById('tx-period').value;
+  const fromEl = document.getElementById('tx-date-from');
+  const toEl = document.getElementById('tx-date-to');
+  const wrap = document.getElementById('tx-date-controls');
+  wrap.classList.toggle('hidden', period === 'all');
+  toEl.classList.toggle('hidden', period !== 'custom');
+  wrap.querySelector('span').classList.toggle('hidden', period !== 'custom');
+  const now = new Date();
+  if (period === 'day') {
+    fromEl.value = fromEl.value || today();
+    toEl.value = fromEl.value;
+  } else if (period === 'week') {
+    const start = new Date(now);
+    start.setDate(now.getDate() - ((now.getDay()+6)%7));
+    fromEl.value = fromEl.value || start.toISOString().split('T')[0];
+    const end = new Date(start);
+    end.setDate(start.getDate()+6);
+    toEl.value = end.toISOString().split('T')[0];
+  } else if (period === 'month') {
+    fromEl.value = monthStartString(now);
+    toEl.value = '';
+  }
+  txPage = 1;
+  if (shouldLoad) loadTransactions();
+}
+
+function getTxQuery() {
+  const period = document.getElementById('tx-period').value;
+  const params = new URLSearchParams({period});
+  const from = document.getElementById('tx-date-from').value;
+  const to = document.getElementById('tx-date-to').value;
+  if (from && period !== 'all') params.set('from', from);
+  if (to && period === 'custom') params.set('to', to);
+  const category = document.getElementById('tx-category-filter').value;
+  if (category) params.set('category', category);
+  return params.toString();
+}
+
+async function loadTransactions() {
+  const tbody = document.getElementById('tx-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch(`/api/transactions?${getTxQuery()}`);
+  const data = await res.json();
+  setMoney('tx-daily-income', data.daily.income);
+  setMoney('tx-daily-expenses', data.daily.expenses);
+  setMoney('tx-daily-net', data.daily.net_profit, true);
+  setMoney('tx-month-income', data.monthly.income);
+  setMoney('tx-month-expenses', data.monthly.expenses);
+  setMoney('tx-month-net', data.monthly.net_profit, true);
+  setMoney('tx-range-income', data.summary.income);
+  setMoney('tx-range-expenses', data.summary.expenses);
+  setMoney('tx-range-net', data.summary.net_profit, true);
+  document.getElementById('tx-range-label').textContent = formatTxRange(data.range.from, data.range.to);
+  document.getElementById('tx-category-label').textContent = data.category ? `Showing category: ${data.category}` : 'Showing all categories';
+  allTransactions = data.transactions || [];
+  renderTransactions();
+}
+
+function formatTxRange(from, to) {
+  if (!from && !to) return 'All time';
+  if (from === to) return fmtDate(from);
+  if (from && to) return `${fmtDate(from)} to ${fmtDate(to)}`;
+  if (from) return `From ${fmtDate(from)}`;
+  return `Until ${fmtDate(to)}`;
+}
+
+function renderTransactions() {
+  const tbody = document.getElementById('tx-tbody');
+  const total = allTransactions.length;
+  const totalPages = Math.max(1, Math.ceil(total / TX_PAGE_SIZE));
+  if (txPage > totalPages) txPage = totalPages;
+  const start = (txPage - 1) * TX_PAGE_SIZE;
+  const page = allTransactions.slice(start, start + TX_PAGE_SIZE);
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/></svg>
+      <p>No transactions for this range.</p></div></td></tr>`;
+    document.getElementById('tx-pagination').innerHTML = '';
+    return;
+  }
+  tbody.innerHTML = page.map(t => {
+    const isIncome = t.transaction_type === 'income';
+    return `<tr>
+      <td class="td-mono">${fmtDate(t.transaction_date)}</td>
+      <td><span class="badge ${isIncome?'b-active':'b-expired'}">${isIncome?'Income':'Expense'}</span></td>
+      <td><span class="chip">${esc(t.category || '-')}</span></td>
+      <td><div class="td-name">${esc(t.description || '-')}</div></td>
+      <td class="td-mono" style="color:${isIncome?'var(--green)':'var(--red)'}">${fmtPeso(t.amount)}</td>
+      <td><div class="row-actions">
+        <button class="sc-act-btn sc-btn-edit" onclick="openTxModal(${t.id})">Edit</button><button class="sc-act-btn sc-btn-del" onclick="deleteTransaction(${t.id})">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  renderTxPagination(total, totalPages, start);
+}
+
+function renderTxPagination(total, totalPages, start) {
+  const pg = document.getElementById('tx-pagination');
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+  let html = `<div class="pg-info">${start+1}-${Math.min(start+TX_PAGE_SIZE,total)} of ${total}</div><div class="pg-btns">`;
+  html += `<button class="pg-btn" onclick="goTxPage(${txPage-1})" ${txPage===1?'disabled':''}>‹</button>`;
+  for (let i=1; i<=totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= txPage-2 && i <= txPage+2)) {
+      html += `<button class="pg-btn ${i===txPage?'pg-active':''}" onclick="goTxPage(${i})">${i}</button>`;
+    } else if (i === txPage-3 || i === txPage+3) {
+      html += `<span class="pg-ellipsis">...</span>`;
+    }
+  }
+  html += `<button class="pg-btn" onclick="goTxPage(${txPage+1})" ${txPage===totalPages?'disabled':''}>›</button></div>`;
+  pg.innerHTML = html;
+}
+
+function goTxPage(page) {
+  const totalPages = Math.max(1, Math.ceil(allTransactions.length / TX_PAGE_SIZE));
+  if (page < 1 || page > totalPages) return;
+  txPage = page;
+  renderTransactions();
+}
+
+function openTxModal(id=null) {
+  txEditingId = id;
+  const tx = id ? allTransactions.find(t => String(t.id) === String(id) && t.source === 'manual') : null;
+  document.getElementById('tx-modal-title').textContent = tx ? 'Edit Transaction' : 'Add Transaction';
+  document.getElementById('tx-f-type').value = tx?.transaction_type || 'income';
+  document.getElementById('tx-f-date').value = tx?.transaction_date || today();
+  document.getElementById('tx-f-amount').value = tx?.amount || '';
+  populateTxCategoryModalSelect(tx?.category || '');
+  document.getElementById('tx-f-description').value = tx?.description || '';
+  document.getElementById('tx-modal').classList.add('open');
+}
+
+function closeTxModal() {
+  document.getElementById('tx-modal').classList.remove('open');
+  txEditingId = null;
+}
+
+async function saveTransaction() {
+  const payload = {
+    transaction_type: document.getElementById('tx-f-type').value,
+    transaction_date: document.getElementById('tx-f-date').value,
+    amount: parseFloat(document.getElementById('tx-f-amount').value),
+    category: document.getElementById('tx-f-category').value.trim(),
+    description: document.getElementById('tx-f-description').value.trim()
+  };
+  if (!payload.transaction_date || !payload.amount || payload.amount <= 0) {
+    showToast('Please enter a valid date and amount.','error');
+    return;
+  }
+  const url = txEditingId ? `/api/transactions/${txEditingId}` : '/api/transactions';
+  const method = txEditingId ? 'PUT' : 'POST';
+  const res = await fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  if (res.ok) {
+    closeTxModal();
+    showToast(txEditingId ? 'Transaction updated.' : 'Transaction saved.','success');
+    loadTransactions();
+  } else {
+    const err = await res.json();
+    showToast(err.error || 'Failed to save transaction.','error');
+  }
+}
+
+async function deleteTransaction(id) {
+  const res = await fetch(`/api/transactions/${id}`, {method:'DELETE'});
+  if (res.ok) {
+    showToast('Transaction deleted.','success');
+    loadTransactions();
+  } else {
+    showToast('Failed to delete transaction.','error');
+  }
+}
+
+// ── TRANSACTION CATEGORIES (brands) ─────────────────────────────
+let allTxCategories = [];
+
+async function loadTxCategories() {
+  const res = await fetch('/api/transaction-categories');
+  allTxCategories = await res.json();
+  populateTxCategoryFilter();
+  populateTxCategoryModalSelect();
+  renderTxCategoryManageList();
+}
+
+function populateTxCategoryFilter() {
+  const sel = document.getElementById('tx-category-filter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Categories</option>' +
+    allTxCategories.map(c => `<option value="${esc(c.name)}" ${cur===c.name?'selected':''}>${esc(c.name)}</option>`).join('');
+}
+
+function populateTxCategoryModalSelect(forceValue=null) {
+  const sel = document.getElementById('tx-f-category');
+  if (!sel) return;
+  const cur = forceValue !== null ? forceValue : sel.value;
+  const names = allTxCategories.map(c => c.name);
+  // Keep a transaction's existing category selectable even if it was since removed from the managed list
+  if (cur && !names.includes(cur)) names.unshift(cur);
+  sel.innerHTML = '<option value="">No category</option>' +
+    names.map(n => `<option value="${esc(n)}" ${cur===n?'selected':''}>${esc(n)}</option>`).join('');
+}
+
+function renderTxCategoryManageList() {
+  const wrap = document.getElementById('tx-cat-list');
+  if (!wrap) return;
+  if (!allTxCategories.length) {
+    wrap.innerHTML = '<div class="tx-cat-empty">No categories yet. Add your first brand or category above.</div>';
+    return;
+  }
+  wrap.innerHTML = allTxCategories.map(c => `
+    <div class="tx-cat-row">
+      <span class="chip">${esc(c.name)}</span>
+      <button class="sc-act-btn sc-btn-del" onclick="deleteTxCategory(${c.id})">Delete</button>
+    </div>
+  `).join('');
+}
+
+function openTxCategoryManageModal() {
+  document.getElementById('tx-cat-new-name').value = '';
+  document.getElementById('tx-cat-modal').classList.add('open');
+  loadTxCategories();
+}
+
+function closeTxCategoryManageModal() {
+  document.getElementById('tx-cat-modal').classList.remove('open');
+}
+
+function quickAddTxCategory() {
+  openTxCategoryManageModal();
+}
+
+async function addTxCategory() {
+  const input = document.getElementById('tx-cat-new-name');
+  const name = input.value.trim();
+  if (!name) { showToast('Enter a category name.','error'); return; }
+  const res = await fetch('/api/transaction-categories', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name})
+  });
+  if (res.ok) {
+    input.value = '';
+    showToast('Category added.','success');
+    await loadTxCategories();
+    const modalSel = document.getElementById('tx-f-category');
+    if (modalSel) populateTxCategoryModalSelect(name);
+  } else {
+    const err = await res.json();
+    showToast(err.error || 'Failed to add category.','error');
+  }
+}
+
+async function deleteTxCategory(id) {
+  const res = await fetch(`/api/transaction-categories/${id}`, {method:'DELETE'});
+  if (res.ok) {
+    showToast('Category removed.','success');
+    loadTxCategories();
+  } else {
+    showToast('Failed to remove category.','error');
+  }
+}
+
+function onTxCategoryFilterChange() {
+  txPage = 1;
+  loadTransactions();
+}
+
+async function loadStats() {
+  const r = await fetch('/api/stats');
+  const s = await r.json();
+  document.getElementById('st-total').textContent = s.total;
+  document.getElementById('st-active').textContent = s.active;
+  document.getElementById('st-soon').textContent = s.expiring_soon;
+  document.getElementById('st-exp').textContent = s.expired;
+  document.getElementById('st-dev').textContent = s.devices;
+}
+
+function setFilter(f) {
+  statusFilter = statusFilter === f ? '' : f;
+  ['sc-all','sc-active','sc-soon','sc-exp'].forEach(id => document.getElementById(id).classList.remove('fil'));
+  const map = {'':'sc-all','active':'sc-active','expiring_soon':'sc-soon','expired':'sc-exp'};
+  document.getElementById(map[statusFilter])?.classList.add('fil');
+  loadRecords();
+}
+
+// ── WARRANTY RECORDS TABLE ────────────────────────────────────
+async function loadRecords() {
+  const search = document.getElementById('search').value;
+  const sup = document.getElementById('sup-filter').value;
+  let url = `/api/records?search=${encodeURIComponent(search)}&supplier=${encodeURIComponent(sup)}`;
+  if (statusFilter) url += `&status=${statusFilter}`;
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch(url);
+  const recs = await res.json();
+  if (!recs.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      <p>No records found.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = recs.map(r => {
+    const supBadge = r.supplier === 'Prowatcher'
+      ? `<span class="badge b-pw">Prowatcher</span>`
+      : `<span class="badge b-am">Amax</span>`;
+    const statusBadge = statusBadgeHtml(r.warranty_status);
+    const shown = r.devices.slice(0,2);
+    const extra = r.devices.length - shown.length;
+    const chips = shown.map(d => {
+      const glowCls = d.warranty_status === 'active' ? 'chip-glow-g' : d.warranty_status === 'expiring_soon' ? 'chip-glow-y' : 'chip-glow-r';
+      return `<span class="chip ${glowCls}">${esc(d.serial_number)}</span>`;
+    }).join('');
+    const moreChip = extra > 0 ? `<span class="chip chip-more">+${extra} more</span>` : '';
+    return `<tr onclick="openDet(${r.id})">
+      <td>
+        <div class="td-name">${esc(r.purchaser_name)}</div>
+        <div class="td-sub td-mono">${esc(r.address).substring(0,48)}${r.address.length>48?'…':''}</div>
+      </td>
+      <td class="td-mono">${fmtDate(r.purchase_date)}</td>
+      <td>${supBadge}</td>
+      <td><div class="chips">${chips}${moreChip}</div></td>
+      <td>${statusBadge}</td>
+      <td>
+        <div class="row-actions" onclick="event.stopPropagation()">
+          <button class="icon-btn" onclick="openEdit(${r.id})" title="Edit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn del" onclick="confirmDel(${r.id})" title="Delete">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function statusBadgeHtml(st) {
+  if (st === 'active') return `<span class="badge b-active"><span class="bdot"></span>Active</span>`;
+  if (st === 'expiring_soon') return `<span class="badge b-soon"><span class="bdot"></span>Expiring Soon</span>`;
+  return `<span class="badge b-expired"><span class="bdot"></span>Expired</span>`;
+}
+
+// ── DETAIL PANEL ──────────────────────────────────────────────
+async function openDet(id) {
+  detId = id;
+  const res = await fetch(`/api/records/${id}`);
+  const r = await res.json();
+  document.getElementById('d-name').textContent = r.purchaser_name;
+  document.getElementById('d-meta').innerHTML =
+    `<span>Purchased: ${fmtDate(r.purchase_date)}</span>
+     <span>${esc(r.supplier)}</span>
+     <span>${r.devices.length} device${r.devices.length !== 1 ? 's' : ''}`;
+  document.getElementById('d-info').innerHTML = `
+    <div class="det-info-item">
+      <div class="det-info-key">Supplier</div>
+      <div class="det-info-val">${r.supplier === 'Prowatcher'
+        ? '<span class="badge b-pw">Prowatcher</span>'
+        : '<span class="badge b-am">Amax</span>'}</div>
+    </div>
+    <div class="det-info-item">
+      <div class="det-info-key">Service Status</div>
+      <div class="det-info-val">${statusBadgeHtml(r.warranty_status)}</div>
+    </div>
+    <div class="det-info-item">
+      <div class="det-info-key">Purchase Date</div>
+      <div class="det-info-val">${fmtDate(r.purchase_date)}</div>
+    </div>
+    <div class="det-info-item">
+      <div class="det-info-key">Turnover Date</div>
+      <div class="det-info-val">${r.turnover_date ? fmtDate(r.turnover_date) : '<span style="color:var(--text3)">—</span>'}</div>
+    </div>
+    <div class="det-info-item full">
+      <div class="det-info-key">Address</div>
+      <div class="det-info-val">${esc(r.address)}</div>
+    </div>`;
+  document.getElementById('d-dev-title').textContent = `Devices (${r.devices.length})`;
+  document.getElementById('d-devs').innerHTML = r.devices.map(d => {
+    const cls = d.warranty_status === 'active' ? 'dg' : d.warranty_status === 'expiring_soon' ? 'dy' : 'dr';
+    const barCls = d.warranty_status === 'active' ? 'wf-g' : d.warranty_status === 'expiring_soon' ? 'wf-y' : 'wf-r';
+    const totalDays = d.warranty_months * 30;
+    const usedDays = totalDays - d.days_left;
+    const pct = Math.min(100, Math.max(0, (usedDays / totalDays) * 100));
+    const daysText = d.days_left < 0 ? `${Math.abs(d.days_left)}` : `${d.days_left}`;
+    const daysLabel = d.days_left < 0 ? 'days overdue' : 'days left';
+    return `<div class="dev-card">
+      <div class="dev-card-top">
+        <div>
+          <div class="dev-card-name">${esc(d.device_name) || 'Unnamed Device'}</div>
+          <div class="dev-card-sn">S/N: ${esc(d.serial_number)}</div>
+        </div>
+        <div class="dev-card-right">
+          <div class="dev-days ${cls}">${daysText}</div>
+          <div class="dev-days-label">${daysLabel}</div>
+          ${statusBadgeHtml(d.warranty_status)}
+        </div>
+      </div>
+      <div class="wbar-track"><div class="wbar-fill ${barCls}" style="width:${pct}%"></div></div>
+      <div class="wbar-labels">
+        <span>${fmtDate(r.purchase_date)}</span>
+        <span>${d.warranty_months}mo warranty · expires ${fmtDate(d.warranty_expiry)}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Service warranties section
+  const svcWarranties = r.service_warranties || [];
+  const svcSection = document.getElementById('d-svc-warranties');
+  if (svcWarranties.length > 0) {
+    svcSection.innerHTML = `<div class="dev-cards-title" style="margin-top:16px">Service Warranties (${svcWarranties.length})</div>` +
+      svcWarranties.map(s => {
+        const cls = s.warranty_status === 'active' ? 'dg' : s.warranty_status === 'expiring_soon' ? 'dy' : 'dr';
+        const barCls = s.warranty_status === 'active' ? 'wf-g' : s.warranty_status === 'expiring_soon' ? 'wf-y' : 'wf-r';
+        const totalDays = s.warranty_months * 30;
+        const usedDays = totalDays - s.days_left;
+        const pct = Math.min(100, Math.max(0, (usedDays / totalDays) * 100));
+        const daysText = s.days_left < 0 ? `${Math.abs(s.days_left)}` : `${s.days_left}`;
+        const daysLabel = s.days_left < 0 ? 'days overdue' : 'days left';
+        return `<div class="dev-card">
+          <div class="dev-card-top">
+            <div>
+              <div class="dev-card-name">${esc(s.service_name)}</div>
+              <div class="dev-card-sn" style="color:var(--text3);font-size:0.72rem">Service Warranty</div>
+            </div>
+            <div class="dev-card-right">
+              <div class="dev-days ${cls}">${daysText}</div>
+              <div class="dev-days-label">${daysLabel}</div>
+              ${statusBadgeHtml(s.warranty_status)}
+            </div>
+          </div>
+          <div class="wbar-track"><div class="wbar-fill ${barCls}" style="width:${pct}%"></div></div>
+          <div class="wbar-labels">
+            <span>${fmtDate(r.purchase_date)}</span>
+            <span>${s.warranty_months}mo · expires ${fmtDate(s.warranty_expiry)}</span>
+          </div>
+        </div>`;
+      }).join('');
+  } else {
+    svcSection.innerHTML = '';
+  }
+  document.getElementById('det-overlay').classList.add('open');
+}
+function closeDet() { document.getElementById('det-overlay').classList.remove('open'); detId = null; }
+function editFromDet() { const id = detId; closeDet(); openEdit(id); }
+function deleteFromDet() { const id = detId; closeDet(); confirmDel(id); }
+
+// ── WARRANTY MODAL ────────────────────────────────────────────
+function openModal(rec = null) {
+  editingId = rec ? rec.id : null;
+  document.getElementById('modal-title').textContent = rec ? 'Edit Warranty Record' : 'New Warranty Record';
+  document.getElementById('f-name').value = rec ? rec.purchaser_name : '';
+  document.getElementById('f-date').value = rec ? rec.purchase_date : today();
+  document.getElementById('f-turnover').value = rec ? (rec.turnover_date || '') : '';
+  document.getElementById('f-addr').value = rec ? rec.address : '';
+  selSup(rec ? rec.supplier : 'Prowatcher');
+  devCnt = 0; svcCnt = 0;
+  document.getElementById('dev-list').innerHTML = '';
+  document.getElementById('svc-list').innerHTML = '';
+  const devs = rec ? rec.devices : [{ serial_number:'', device_name:'', warranty_months: 12 }];
+  devs.forEach(d => addDevRow(d.serial_number, d.device_name, d.warranty_months));
+  const svcs = rec ? (rec.service_warranties || []) : [];
+  svcs.forEach(s => addSvcRow(s.service_name, s.warranty_months));
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); editingId = null; }
+
+function selSup(s) {
+  selSupplier = s;
+  document.getElementById('sp-pw').className = 'sup-opt' + (s==='Prowatcher' ? ' sup-pw' : '');
+  document.getElementById('sp-am').className = 'sup-opt' + (s==='Amax' ? ' sup-am' : '');
+}
+
+function warrantyOptions(sel) {
+  const opts = [
+    [1,'1 Month'], [3,'3 Months'], [6,'6 Months'],
+    [12,'12 Months (1 yr)'], [18,'18 Months'], [24,'24 Months (2 yr)'],
+    [36,'36 Months (3 yr)'], [48,'48 Months (4 yr)'], [60,'60 Months (5 yr)'],
+    ['custom','Custom…']
+  ];
+  const isPreset = opts.some(([v]) => v !== 'custom' && +v === +sel);
+  const selVal = isPreset ? +sel : 'custom';
+  return opts.map(([v,l]) => `<option value="${v}"${selVal==v?' selected':''}>${l}</option>`).join('');
+}
+
+function wmWrap(rowId, sel) {
+  const isPreset = [1,3,6,12,18,24,36,48,60].includes(+sel);
+  const showCustom = !isPreset ? '' : 'display:none';
+  return `<div style="display:flex;gap:6px;align-items:center">
+    <select class="fs" id="dw-${rowId}" onchange="onWmChange('${rowId}')" style="flex:1">${warrantyOptions(sel)}</select>
+    <input type="number" class="fi" id="dwc-${rowId}" placeholder="months" min="1" max="600"
+      value="${!isPreset ? sel : ''}" style="width:80px;${showCustom}" />
+  </div>`;
+}
+
+function onWmChange(rowId) {
+  const sel = document.getElementById(`dw-${rowId}`);
+  const custom = document.getElementById(`dwc-${rowId}`);
+  if (!custom) return;
+  const isCustom = sel.value === 'custom';
+  custom.style.display = isCustom ? '' : 'none';
+  if (isCustom) custom.focus();
+}
+
+function getWmValue(rowId) {
+  const sel = document.getElementById(`dw-${rowId}`);
+  if (!sel) return 12;
+  if (sel.value === 'custom') {
+    return parseInt(document.getElementById(`dwc-${rowId}`)?.value) || 1;
+  }
+  return +sel.value;
+}
+
+function addDevRow(sn='', name='', wm=12) {
+  const id = ++devCnt;
+  const div = document.createElement('div');
+  div.className = 'dev-row';
+  div.id = `dr-${id}`;
+  div.innerHTML = `
+    <div class="fg">
+      ${id===1?'<label>Device Name</label>':'<label style="opacity:0">x</label>'}
+      <input type="text" class="fi" id="dn-${id}" placeholder="Device name" value="${esc(name)}" />
+    </div>
+    <div class="fg">
+      ${id===1?'<label>Serial Number</label>':'<label style="opacity:0">x</label>'}
+      <input type="text" class="fi" id="ds-${id}" placeholder="e.g. PW-2024-00123" value="${esc(sn)}" />
+    </div>
+    <div class="fg">
+      ${id===1?'<label>Warranty</label>':'<label style="opacity:0">x</label>'}
+      ${wmWrap(id, wm)}
+    </div>
+    <button class="rm-btn" onclick="rmDev(${id})" title="Remove">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>`;
+  document.getElementById('dev-list').appendChild(div);
+}
+
+function rmDev(id) {
+  if (document.querySelectorAll('.dev-row').length <= 1) { showToast('At least one device required.','error'); return; }
+  document.getElementById(`dr-${id}`)?.remove();
+}
+
+function getDevices() {
+  const devs = [];
+  document.querySelectorAll('.dev-row').forEach(row => {
+    const id = row.id.replace('dr-','');
+    const sn = document.getElementById(`ds-${id}`)?.value.trim();
+    const name = document.getElementById(`dn-${id}`)?.value.trim();
+    const wm = getWmValue(id);
+    if (sn) devs.push({ serial_number: sn, device_name: name||'', warranty_months: wm });
+  });
+  return devs;
+}
+
+let svcCnt = 0;
+function addSvcRow(name='', wm=12) {
+  const id = ++svcCnt;
+  const div = document.createElement('div');
+  div.className = 'svc-row';
+  div.id = `sr-${id}`;
+  div.innerHTML = `
+    <div class="fg" style="flex:1">
+      ${id===1?'<label>Service Name</label>':'<label style="opacity:0">x</label>'}
+      <input type="text" class="fi" id="sn-${id}" placeholder="e.g. Installation, CCTV Setup" value="${esc(name)}" />
+    </div>
+    <div class="fg" style="width:220px">
+      ${id===1?'<label>Warranty</label>':'<label style="opacity:0">x</label>'}
+      ${wmWrap('s'+id, wm)}
+    </div>
+    <button class="rm-btn" onclick="rmSvc(${id})" title="Remove">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>`;
+  document.getElementById('svc-list').appendChild(div);
+}
+
+function rmSvc(id) {
+  document.getElementById(`sr-${id}`)?.remove();
+}
+
+function getServiceWarranties() {
+  const svcs = [];
+  document.querySelectorAll('.svc-row').forEach(row => {
+    const id = row.id.replace('sr-','');
+    const name = document.getElementById(`sn-${id}`)?.value.trim();
+    const wm = getWmValue('s'+id);
+    if (name) svcs.push({ service_name: name, warranty_months: wm });
+  });
+  return svcs;
+}
+
+async function saveRecord() {
+  const name = document.getElementById('f-name').value.trim();
+  const dt = document.getElementById('f-date').value;
+  const turnover = document.getElementById('f-turnover').value || null;
+  const addr = document.getElementById('f-addr').value.trim();
+  const devices = getDevices();
+  const service_warranties = getServiceWarranties();
+  if (!name || !dt || !addr) { showToast('Please fill in all required fields.','error'); return; }
+  if (!devices.length) { showToast('Add at least one device with a serial number.','error'); return; }
+  const payload = { purchaser_name:name, purchase_date:dt, turnover_date:turnover, address:addr, supplier:selSupplier, devices, service_warranties };
+  const url = editingId ? `/api/records/${editingId}` : '/api/records';
+  const method = editingId ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  if (res.ok) {
+    closeModal();
+    showToast(editingId ? 'Record updated.' : 'Warranty record created.', 'success');
+    loadRecords(); loadStats();
+  } else {
+    const e = await res.json();
+    showToast(e.error || 'Failed to save.','error');
+  }
+}
+
+async function openEdit(id) {
+  const res = await fetch(`/api/records/${id}`);
+  const rec = await res.json();
+  openModal(rec);
+}
+
+// ── WARRANTY DELETE ───────────────────────────────────────────
+let pendingDel = null;
+function confirmDel(id) {
+  pendingDel = id;
+  document.getElementById('conf-overlay').classList.add('open');
+  document.getElementById('conf-ok').onclick = () => doDel(id);
+}
+function closeConf() { document.getElementById('conf-overlay').classList.remove('open'); pendingDel = null; }
+async function doDel(id) {
+  closeConf();
+  const res = await fetch(`/api/records/${id}`, { method:'DELETE' });
+  if (res.ok) { showToast('Record deleted.','success'); loadRecords(); loadStats(); }
+  else showToast('Failed to delete.','error');
+}
+
+// ══════════════════════════════════════════════════════════════
+// SCREWS & CONNECTORS
+// ══════════════════════════════════════════════════════════════
+
+async function loadScStats() {
+  const r = await fetch('/api/sc/stats');
+  const s = await r.json();
+  document.getElementById('sc-st-items').textContent = s.total_items;
+  document.getElementById('sc-st-qty').textContent = s.total_qty.toLocaleString();
+  document.getElementById('sc-st-value').textContent = fmtPeso(s.total_value);
+  document.getElementById('sc-st-month').textContent = fmtPeso(s.value_taken_month);
+}
+
+async function loadScItems() {
+  const tbody = document.getElementById('sc-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch('/api/sc/items');
+  allScItems = await res.json();
+  filterScItems();
+}
+
+// ── LOG STATE ──────────────────────────────────────────────────
+let allLogEntries = [];
+let logTypeFilter = '';
+let logPage = 1;
+const LOG_PAGE_SIZE = 15;
+
+function setLogType(type) {
+  logTypeFilter = type;
+  logPage = 1;
+  ['lf-all','lf-add','lf-take'].forEach(id => document.getElementById(id).classList.remove('active'));
+  const map = { '':'lf-all', 'add':'lf-add', 'take':'lf-take' };
+  document.getElementById(map[type]).classList.add('active');
+  renderLog();
+}
+
+function onLogPeriodChange() {
+  const v = document.getElementById('log-period').value;
+  const cr = document.getElementById('log-custom-range');
+  cr.classList.toggle('hidden', v !== 'custom');
+  logPage = 1;
+  renderLog();
+}
+
+function getLogDateRange() {
+  const period = document.getElementById('log-period').value;
+  const now = new Date();
+  if (period === 'today') {
+    const d = now.toISOString().split('T')[0];
+    return { from: d, to: d };
+  }
+  if (period === 'week') {
+    const day = now.getDay();
+    const mon = new Date(now); mon.setDate(now.getDate() - ((day + 6) % 7));
+    const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+    return { from: mon.toISOString().split('T')[0], to: sun.toISOString().split('T')[0] };
+  }
+  if (period === 'month') {
+    const from = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+    return { from, to: now.toISOString().split('T')[0] };
+  }
+  if (period === 'custom') {
+    return {
+      from: document.getElementById('log-date-from').value || null,
+      to:   document.getElementById('log-date-to').value   || null,
+    };
+  }
+  return { from: null, to: null };
+}
+
+async function loadScTakes() {
+  const tbody = document.getElementById('sc-takes-tbody');
+  tbody.innerHTML = '<tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch('/api/sc/takes');
+  allLogEntries = await res.json();
+  logPage = 1;
+  renderLog();
+}
+
+function renderLog() {
+  const tbody = document.getElementById('sc-takes-tbody');
+  const { from, to } = getLogDateRange();
+
+  let entries = allLogEntries.filter(t => {
+    if (logTypeFilter && t.type !== logTypeFilter) return false;
+    const dateStr = (t.event_at || '').split('T')[0].split(' ')[0];
+    if (from && dateStr < from) return false;
+    if (to   && dateStr > to)   return false;
+    return true;
+  });
+
+  const total = entries.length;
+  const totalPages = Math.max(1, Math.ceil(total / LOG_PAGE_SIZE));
+  if (logPage > totalPages) logPage = totalPages;
+  const start = (logPage - 1) * LOG_PAGE_SIZE;
+  const page  = entries.slice(start, start + LOG_PAGE_SIZE);
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/><polyline points="16 6 12 2 8 6"/></svg>
+      <p>No matching activity.</p></div></td></tr>`;
+    document.getElementById('log-pagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(t => {
+    const isAdd = t.type === 'add';
+    const typeBadge = isAdd
+      ? `<span class="badge b-active" style="min-width:52px;justify-content:center">Add</span>`
+      : `<span class="badge b-soon"   style="min-width:52px;justify-content:center">Take</span>`;
+    const priceColor = isAdd ? 'var(--green)' : 'var(--yellow)';
+    return `<tr>
+      <td>${typeBadge}</td>
+      <td><div class="td-name">${esc(t.item_name)}</div></td>
+      <td><span class="chip">${esc(t.item_size || '—')}</span></td>
+      <td class="td-mono">${t.qty.toLocaleString()}</td>
+      <td class="td-mono">${fmtPeso(t.unit_price)}</td>
+      <td class="td-mono" style="color:${priceColor}">${fmtPeso(t.total_price)}</td>
+      <td class="td-mono" style="font-size:0.78rem;color:var(--text3)">${fmtDateTime(t.event_at)}</td>
+      <td>
+        <div class="row-actions" style="gap:4px">
+          <button class="sc-act-btn sc-btn-restore" onclick="undoLogEntry('${t.type}',${t.id})" title="Reverse stock change">Undo</button>
+          <button class="sc-act-btn sc-btn-del" onclick="removeLogEntry('${t.type}',${t.id})" title="Remove log only">Remove</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Pagination
+  const pg = document.getElementById('log-pagination');
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+
+  let pages = [];
+  // always show first, last, and window around current
+  const window = 2;
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= logPage - window && i <= logPage + window)) {
+      pages.push(i);
+    }
+  }
+  // insert ellipses
+  let html = `<div class="pg-info">${start+1}–${Math.min(start+LOG_PAGE_SIZE,total)} of ${total}</div><div class="pg-btns">`;
+  html += `<button class="pg-btn" onclick="goLogPage(${logPage-1})" ${logPage===1?'disabled':''}>‹</button>`;
+  let prev = null;
+  for (const p of pages) {
+    if (prev !== null && p - prev > 1) html += `<span class="pg-ellipsis">…</span>`;
+    html += `<button class="pg-btn ${p===logPage?'pg-active':''}" onclick="goLogPage(${p})">${p}</button>`;
+    prev = p;
+  }
+  html += `<button class="pg-btn" onclick="goLogPage(${logPage+1})" ${logPage===totalPages?'disabled':''}>›</button>`;
+  html += '</div>';
+  pg.innerHTML = html;
+}
+
+function goLogPage(p) {
+  const totalPages = Math.max(1, Math.ceil(
+    allLogEntries.filter(t => {
+      if (logTypeFilter && t.type !== logTypeFilter) return false;
+      const { from, to } = getLogDateRange();
+      const dateStr = (t.event_at || '').split('T')[0].split(' ')[0];
+      if (from && dateStr < from) return false;
+      if (to   && dateStr > to)   return false;
+      return true;
+    }).length / LOG_PAGE_SIZE
+  ));
+  if (p < 1 || p > totalPages) return;
+  logPage = p;
+  renderLog();
+}
+
+// SC ITEM MODAL
+function openScItemModal() {
+  scEditingId = null;
+  document.getElementById('sc-modal-title').textContent = 'Add Inventory Item';
+  document.getElementById('sc-f-name').value = '';
+  document.getElementById('sc-f-size').value = '';
+  document.getElementById('sc-f-qty').value = '';
+  document.getElementById('sc-f-price').value = '';
+  document.getElementById('sc-qty-row').style.display = '';
+  document.getElementById('sc-item-modal').classList.add('open');
+}
+function openScEditModal(id, name, size, price) {
+  scEditingId = id;
+  document.getElementById('sc-modal-title').textContent = 'Edit Item';
+  document.getElementById('sc-f-name').value = name;
+  document.getElementById('sc-f-size').value = size;
+  document.getElementById('sc-f-price').value = price;
+  document.getElementById('sc-qty-row').style.display = 'none';
+  document.getElementById('sc-item-modal').classList.add('open');
+}
+function closeScItemModal() { document.getElementById('sc-item-modal').classList.remove('open'); scEditingId = null; }
+
+async function saveScItem() {
+  const name = document.getElementById('sc-f-name').value.trim();
+  const size = document.getElementById('sc-f-size').value.trim();
+  const price = parseFloat(document.getElementById('sc-f-price').value);
+  if (!name || !size || isNaN(price)) { showToast('Please fill in all fields.','error'); return; }
+  if (price < 0) { showToast('Price must be positive.','error'); return; }
+  let payload, url, method;
+  if (scEditingId) {
+    payload = { name, size, price };
+    url = `/api/sc/items/${scEditingId}`; method = 'PUT';
+  } else {
+    const qty = parseInt(document.getElementById('sc-f-qty').value);
+    if (isNaN(qty) || qty < 0) { showToast('Qty must be a positive number.','error'); return; }
+    payload = { name, size, qty, price };
+    url = '/api/sc/items'; method = 'POST';
+  }
+  const res = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+  if (res.ok) {
+    closeScItemModal();
+    showToast(scEditingId ? 'Item updated.' : 'Item added.', 'success');
+    loadScItems(); loadScStats();
+  } else {
+    const e = await res.json();
+    showToast(e.error || 'Failed to save.','error');
+  }
+}
+
+// SC ADD STOCK MODAL
+let scAddItem = null;
+function openScAddModal(id, name, price) {
+  scAddItem = { id, name, price };
+  document.getElementById('add-item-info').innerHTML = `
+    <div class="take-info-row"><span class="take-info-label">Item</span><span class="take-info-val">${esc(name)}</span></div>
+    <div class="take-info-row"><span class="take-info-label">Unit Price</span><span class="take-info-val">${fmtPeso(price)}</span></div>`;
+  document.getElementById('add-qty').value = '1';
+  document.getElementById('add-preview').innerHTML = '';
+  document.getElementById('sc-add-modal').classList.add('open');
+  document.getElementById('add-qty').addEventListener('input', updateAddPreview);
+  updateAddPreview();
+}
+function closeScAddModal() { document.getElementById('sc-add-modal').classList.remove('open'); scAddItem = null; }
+function updateAddPreview() {
+  if (!scAddItem) return;
+  const qty = parseInt(document.getElementById('add-qty').value) || 0;
+  const preview = document.getElementById('add-preview');
+  if (qty > 0) {
+    preview.innerHTML = `<div class="take-preview-line">
+      <span>Total Stock Value Added</span>
+      <span style="color:var(--green);font-weight:700;font-size:1.1rem">${fmtPeso(qty * scAddItem.price)}</span>
+    </div>`;
+  } else { preview.innerHTML = ''; }
+}
+async function confirmAdd() {
+  if (!scAddItem) return;
+  const qty = parseInt(document.getElementById('add-qty').value);
+  if (!qty || qty <= 0) { showToast('Enter a valid quantity.','error'); return; }
+  const res = await fetch('/api/sc/add', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ item_id: scAddItem.id, qty })
+  });
+  if (res.ok) {
+    closeScAddModal();
+    showToast(`Added ${qty} pcs to stock.`, 'success');
+    loadScItems(); loadScTakes(); loadScStats();
+  } else {
+    const e = await res.json();
+    showToast(e.error || 'Failed to add stock.','error');
+  }
+}
+function openScTakeModal(id, name, qty, price) {
+  scTakeItem = { id, name, qty, price };
+  document.getElementById('take-item-info').innerHTML = `
+    <div class="take-info-row"><span class="take-info-label">Item</span><span class="take-info-val">${esc(name)}</span></div>
+    <div class="take-info-row"><span class="take-info-label">In Stock</span><span class="take-info-val" style="color:var(--green)">${qty.toLocaleString()} pcs</span></div>
+    <div class="take-info-row"><span class="take-info-label">Unit Price</span><span class="take-info-val">${fmtPeso(price)}</span></div>`;
+  document.getElementById('take-qty').value = '1';
+  document.getElementById('sc-take-modal').classList.add('open');
+  updateTakePreview();
+}
+function closeScTakeModal() { document.getElementById('sc-take-modal').classList.remove('open'); scTakeItem = null; }
+
+function updateTakePreview() {
+  if (!scTakeItem) return;
+  const qty = parseInt(document.getElementById('take-qty').value) || 0;
+  const total = qty * scTakeItem.price;
+  const preview = document.getElementById('take-preview');
+  if (qty > 0 && qty <= scTakeItem.qty) {
+    preview.innerHTML = `<div class="take-preview-line">
+      <span>Total Cost</span>
+      <span style="color:var(--yellow);font-weight:700;font-size:1.1rem">${fmtPeso(total)}</span>
+    </div>
+    <div class="take-preview-line" style="font-size:0.78rem;color:var(--text3)">
+      <span>Remaining after</span>
+      <span>${(scTakeItem.qty - qty).toLocaleString()} pcs</span>
+    </div>`;
+  } else if (qty > scTakeItem.qty) {
+    preview.innerHTML = `<div style="color:var(--red);font-size:0.83rem;margin-top:8px">Exceeds available stock (${scTakeItem.qty} pcs)</div>`;
+  } else {
+    preview.innerHTML = '';
+  }
+}
+
+async function confirmTake() {
+  if (!scTakeItem) return;
+  const qty = parseInt(document.getElementById('take-qty').value);
+  if (!qty || qty <= 0) { showToast('Enter a valid quantity.','error'); return; }
+  if (qty > scTakeItem.qty) { showToast('Not enough stock.','error'); return; }
+  const res = await fetch('/api/sc/take', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ item_id: scTakeItem.id, qty })
+  });
+  if (res.ok) {
+    const d = await res.json();
+    closeScTakeModal();
+    showToast(`Taken ${qty} pcs — ${fmtPeso(d.total_price)} total`, 'success');
+    loadScItems(); loadScTakes(); loadScStats();
+  } else {
+    const e = await res.json();
+    showToast(e.error || 'Failed to take items.','error');
+  }
+}
+
+// SC SEARCH FILTER
+let allScItems = [];
+function filterScItems() {
+  const q = (document.getElementById('sc-search')?.value || '').toLowerCase().trim();
+  const filtered = q ? allScItems.filter(i =>
+    i.name.toLowerCase().includes(q) || i.size.toLowerCase().includes(q)
+  ) : allScItems;
+  renderScItems(filtered);
+}
+
+function renderScItems(items) {
+  const tbody = document.getElementById('sc-tbody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      <p>No items match your search.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(item => {
+    const totalVal = item.qty * item.price;
+    const qtyClass = item.qty === 0 ? 'qty-zero' : item.qty < 10 ? 'qty-low' : '';
+    return `<tr>
+      <td><div class="td-name">${esc(item.name)}</div></td>
+      <td><span class="chip">${esc(item.size)}</span></td>
+      <td><span class="qty-badge ${qtyClass}">${item.qty.toLocaleString()}</span></td>
+      <td class="td-mono">${fmtPeso(item.price)}</td>
+      <td class="td-mono" style="color:var(--green)">${fmtPeso(totalVal)}</td>
+      <td>
+        <div class="row-actions">
+          <button class="sc-act-btn sc-btn-add" onclick="openScAddModal(${item.id}, '${esc(item.name)}', ${item.price})" title="Add stock">Add</button>
+          <button class="sc-act-btn sc-btn-take" onclick="openScTakeModal(${item.id}, '${esc(item.name)}', ${item.qty}, ${item.price})" title="Take items" ${item.qty===0?'disabled':''}>Take</button>
+          <button class="sc-act-btn sc-btn-edit" onclick="openScEditModal(${item.id},'${esc(item.name)}','${esc(item.size)}',${item.price})" title="Edit">Edit</button>
+          <button class="sc-act-btn sc-btn-del" onclick="confirmScDel(${item.id})" title="Hide item">Hide</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// UNDO LOG ENTRY (reverses stock)
+async function undoLogEntry(type, id) {
+  const endpoint = type === 'add' ? `/api/sc/adds/${id}` : `/api/sc/takes/${id}`;
+  const res = await fetch(endpoint, { method: 'DELETE' });
+  if (res.ok) {
+    allLogEntries = allLogEntries.filter(e => !(e.type === type && e.id === id));
+    renderLog();
+    showToast('Entry undone and stock updated.', 'success');
+    loadScItems();
+    loadScStats();
+  } else {
+    showToast('Failed to undo entry.', 'error');
+  }
+}
+
+// REMOVE LOG ENTRY (log only, no stock change)
+async function removeLogEntry(type, id) {
+  const endpoint = type === 'add' ? `/api/sc/adds/${id}/remove` : `/api/sc/takes/${id}/remove`;
+  const res = await fetch(endpoint, { method: 'DELETE' });
+  if (res.ok) {
+    allLogEntries = allLogEntries.filter(e => !(e.type === type && e.id === id));
+    renderLog();
+    showToast('Log entry removed.', 'success');
+    loadScStats();
+  } else {
+    showToast('Failed to remove log entry.', 'error');
+  }
+}
+async function loadScArchive() {
+  const tbody = document.getElementById('sc-archive-tbody');
+  tbody.innerHTML = '<tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch('/api/sc/archived');
+  const items = await res.json();
+  // update badge
+  const badge = document.getElementById('sct-archive-badge');
+  if (items.length > 0) {
+    badge.textContent = items.length;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      <p>No archived items.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(item => `<tr>
+    <td><div class="td-name">${esc(item.name)}</div></td>
+    <td><span class="chip">${esc(item.size)}</span></td>
+    <td class="td-mono" style="color:var(--text3)">${item.qty.toLocaleString()}</td>
+    <td class="td-mono">${fmtPeso(item.price)}</td>
+    <td>
+      <button class="sc-act-btn sc-btn-restore" onclick="restoreScItem(${item.id})">Restore</button>
+    </td>
+  </tr>`).join('');
+}
+
+async function restoreScItem(id) {
+  const res = await fetch(`/api/sc/items/${id}/restore`, { method: 'POST' });
+  if (res.ok) {
+    showToast('Item restored to inventory.', 'success');
+    loadScArchive();
+    loadScItems();
+    loadScStats();
+  } else {
+    showToast('Failed to restore item.', 'error');
+  }
+}
+
+// SC DELETE (hide)
+function confirmScDel(id) {
+  document.getElementById('sc-conf-overlay').classList.add('open');
+  document.getElementById('sc-conf-ok').onclick = () => doScDel(id);
+}
+function closeScConf() { document.getElementById('sc-conf-overlay').classList.remove('open'); }
+async function doScDel(id) {
+  closeScConf();
+  const res = await fetch(`/api/sc/items/${id}`, { method:'DELETE' });
+  if (res.ok) {
+    showToast('Item hidden from inventory.','success');
+    loadScItems(); loadScStats();
+    // refresh badge count without loading full archive table
+    fetch('/api/sc/archived').then(r => r.json()).then(items => {
+      const badge = document.getElementById('sct-archive-badge');
+      if (items.length > 0) { badge.textContent = items.length; badge.classList.remove('hidden'); }
+      else badge.classList.add('hidden');
+    });
+  }
+  else showToast('Failed to hide item.','error');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────
+let toastT;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toast-icon');
+  document.getElementById('toast-msg').textContent = msg;
+  t.className = `toast show ${type}`;
+  icon.innerHTML = type === 'success'
+    ? '<polyline points="20 6 9 17 4 12"/>'
+    : '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+
+// ══════════════════════════════════════════════════════════════
+// PRODUCT PRICES
+// ══════════════════════════════════════════════════════════════
+
+let ppEditingId = null;
+let allPpItems = [];
+let ppPage = 1;
+const PP_PAGE_SIZE = 20;
+
+function getGlobalMarkup() {
+  return parseFloat(document.getElementById('pp-global-markup').value) || 0;
+}
+
+function onGlobalMarkupChange() {
+  renderPpItems();
+}
+function showPpTab(tab) {
+  document.getElementById('pp-tab-active').classList.toggle('hidden', tab !== 'active');
+  document.getElementById('pp-tab-archive').classList.toggle('hidden', tab !== 'archive');
+  document.getElementById('ppt-active').classList.toggle('active', tab === 'active');
+  document.getElementById('ppt-archive').classList.toggle('active', tab === 'archive');
+  document.getElementById('pp-add-btn').classList.toggle('hidden', tab !== 'active');
+  if (tab === 'archive') loadPpArchive();
+}
+
+// ── LOAD ITEMS ────────────────────────────────────────────────
+async function loadPpItems() {
+  const search = document.getElementById('pp-search').value;
+  const type   = document.getElementById('pp-type-filter').value;
+  const tbody  = document.getElementById('pp-tbody');
+  tbody.innerHTML = '<tr><td colspan="9"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch(`/api/pp/items?search=${encodeURIComponent(search)}&type=${encodeURIComponent(type)}`);
+  allPpItems = await res.json();
+  ppPage = 1;
+  renderPpItems();
+  loadPpTypes();
+}
+
+async function loadPpTypes() {
+  const res = await fetch('/api/pp/types');
+  const types = await res.json();
+  const sel = document.getElementById('pp-type-filter');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All Types</option>' +
+    types.map(t => `<option value="${esc(t)}" ${cur===t?'selected':''}>${esc(t)}</option>`).join('');
+  // also populate datalist in modal
+  const dl = document.getElementById('pp-type-suggestions');
+  if (dl) dl.innerHTML = types.map(t => `<option value="${esc(t)}"></option>`).join('');
+}
+
+function renderPpItems() {
+  const tbody = document.getElementById('pp-tbody');
+  const total = allPpItems.length;
+  const totalPages = Math.max(1, Math.ceil(total / PP_PAGE_SIZE));
+  if (ppPage > totalPages) ppPage = totalPages;
+  const start = (ppPage - 1) * PP_PAGE_SIZE;
+  const page  = allPpItems.slice(start, start + PP_PAGE_SIZE);
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="9"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+      <p>No products found.</p></div></td></tr>`;
+    document.getElementById('pp-pagination').innerHTML = '';
+    return;
+  }
+
+    const cm = getGlobalMarkup();
+    tbody.innerHTML = page.map(item => {
+      const sp = item.supplier_price;
+      const p20 = sp * 1.20, p25 = sp * 1.25, p30 = sp * 1.30;
+      const pCust = sp * (1 + cm / 100);
+      return `<tr>
+        <td class="td-mono" style="color:var(--text3);font-size:0.78rem">${esc(item.code) || '—'}</td>
+        <td><div class="td-name">${esc(item.model)}</div></td>
+        <td>${item.product_type ? `<span class="chip">${esc(item.product_type)}</span>` : '—'}</td>
+        <td class="td-mono">${fmtPeso(sp)}</td>
+        <td class="td-mono pp-m20">${fmtPeso(p20)}</td>
+        <td class="td-mono pp-m25">${fmtPeso(p25)}</td>
+        <td class="td-mono pp-m30">${fmtPeso(p30)}</td>
+        <td class="td-mono pp-mcust">${fmtPeso(pCust)}</td>
+        <td>
+          <div class="row-actions">
+            <button class="sc-act-btn sc-btn-edit" onclick="openPpEdit(${item.id})">Edit</button>
+            <button class="sc-act-btn sc-btn-del"  onclick="confirmPpHide(${item.id})">Hide</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+
+  // pagination
+  const pg = document.getElementById('pp-pagination');
+  if (totalPages <= 1) { pg.innerHTML = ''; return; }
+  let pages = [];
+  const win = 2;
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= ppPage - win && i <= ppPage + win)) pages.push(i);
+  }
+  let html = `<div class="pg-info">${start+1}–${Math.min(start+PP_PAGE_SIZE,total)} of ${total}</div><div class="pg-btns">`;
+  html += `<button class="pg-btn" onclick="goPpPage(${ppPage-1})" ${ppPage===1?'disabled':''}>‹</button>`;
+  let prev = null;
+  for (const p of pages) {
+    if (prev !== null && p - prev > 1) html += `<span class="pg-ellipsis">…</span>`;
+    html += `<button class="pg-btn ${p===ppPage?'pg-active':''}" onclick="goPpPage(${p})">${p}</button>`;
+    prev = p;
+  }
+  html += `<button class="pg-btn" onclick="goPpPage(${ppPage+1})" ${ppPage===totalPages?'disabled':''}>›</button></div>`;
+  pg.innerHTML = html;
+}
+
+function goPpPage(p) {
+  const totalPages = Math.max(1, Math.ceil(allPpItems.length / PP_PAGE_SIZE));
+  if (p < 1 || p > totalPages) return;
+  ppPage = p;
+  renderPpItems();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────
+function openPpModal(item = null) {
+  ppEditingId = item ? item.id : null;
+  document.getElementById('pp-modal-title').textContent = item ? 'Edit Product' : 'Add Product';
+  document.getElementById('pp-f-code').value   = item ? (item.code || '') : '';
+  document.getElementById('pp-f-model').value  = item ? item.model : '';
+  document.getElementById('pp-f-type').value   = item ? (item.product_type || '') : '';
+  document.getElementById('pp-f-price').value  = item ? item.supplier_price : '';
+  updatePpPreview();
+  loadPpTypes();
+  document.getElementById('pp-modal').classList.add('open');
+}
+function closePpModal() { document.getElementById('pp-modal').classList.remove('open'); ppEditingId = null; }
+
+function updatePpPreview() {
+  const sp = parseFloat(document.getElementById('pp-f-price').value) || 0;
+  const cm = getGlobalMarkup();
+  if (sp <= 0) { document.getElementById('pp-preview').innerHTML = ''; return; }
+  document.getElementById('pp-preview').innerHTML = `
+    <div class="pp-preview-grid">
+      <div class="pp-prev-item"><div class="pp-prev-label">Supplier</div><div class="pp-prev-val">${fmtPeso(sp)}</div></div>
+      <div class="pp-prev-item"><div class="pp-prev-label">+20%</div><div class="pp-prev-val pp-m20">${fmtPeso(sp*1.20)}</div></div>
+      <div class="pp-prev-item"><div class="pp-prev-label">+25%</div><div class="pp-prev-val pp-m25">${fmtPeso(sp*1.25)}</div></div>
+      <div class="pp-prev-item"><div class="pp-prev-label">+30%</div><div class="pp-prev-val pp-m30">${fmtPeso(sp*1.30)}</div></div>
+      <div class="pp-prev-item"><div class="pp-prev-label">+${cm}% (custom)</div><div class="pp-prev-val pp-mcust">${fmtPeso(sp*(1+cm/100))}</div></div>
+    </div>`;
+}
+
+async function openPpEdit(id) {
+  const item = allPpItems.find(i => i.id === id);
+  if (item) openPpModal(item);
+}
+
+async function savePpItem() {
+  const model  = document.getElementById('pp-f-model').value.trim();
+  const code   = document.getElementById('pp-f-code').value.trim();
+  const ptype  = document.getElementById('pp-f-type').value.trim();
+  const price  = parseFloat(document.getElementById('pp-f-price').value);
+  if (!model) { showToast('Model is required.', 'error'); return; }
+  if (isNaN(price) || price < 0) { showToast('Enter a valid supplier price.', 'error'); return; }
+  const payload = { code, model, product_type: ptype, supplier_price: price };
+  const url    = ppEditingId ? `/api/pp/items/${ppEditingId}` : '/api/pp/items';
+  const method = ppEditingId ? 'PUT' : 'POST';
+  const res = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+  if (res.ok) {
+    closePpModal();
+    showToast(ppEditingId ? 'Product updated.' : 'Product added.', 'success');
+    loadPpItems();
+  } else {
+    const e = await res.json();
+    showToast(e.error || 'Failed to save.', 'error');
+  }
+}
+
+// ── HIDE / ARCHIVE ────────────────────────────────────────────
+function confirmPpHide(id) {
+  document.getElementById('pp-conf-overlay').classList.add('open');
+  document.getElementById('pp-conf-ok').onclick = () => doPpHide(id);
+}
+function closePpConf() { document.getElementById('pp-conf-overlay').classList.remove('open'); }
+async function doPpHide(id) {
+  closePpConf();
+  const res = await fetch(`/api/pp/items/${id}`, { method: 'DELETE' });
+  if (res.ok) {
+    showToast('Product hidden.', 'success');
+    loadPpItems();
+    fetch('/api/pp/archived').then(r => r.json()).then(items => {
+      const badge = document.getElementById('ppt-archive-badge');
+      if (items.length > 0) { badge.textContent = items.length; badge.classList.remove('hidden'); }
+      else badge.classList.add('hidden');
+    });
+  } else showToast('Failed to hide product.', 'error');
+}
+
+async function loadPpArchive() {
+  const tbody = document.getElementById('pp-archive-tbody');
+  tbody.innerHTML = '<tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch('/api/pp/archived');
+  const items = await res.json();
+  const badge = document.getElementById('ppt-archive-badge');
+  if (items.length > 0) { badge.textContent = items.length; badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg>
+      <p>No archived products.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(item => `<tr>
+    <td class="td-mono" style="color:var(--text3);font-size:0.78rem">${esc(item.code) || '—'}</td>
+    <td><div class="td-name">${esc(item.model)}</div></td>
+    <td>${item.product_type ? `<span class="chip">${esc(item.product_type)}</span>` : '—'}</td>
+    <td class="td-mono">${fmtPeso(item.supplier_price)}</td>
+    <td><button class="sc-act-btn sc-btn-restore" onclick="restorePpItem(${item.id})">Restore</button></td>
+  </tr>`).join('');
+}
+
+async function restorePpItem(id) {
+  const res = await fetch(`/api/pp/items/${id}/restore`, { method: 'POST' });
+  if (res.ok) { showToast('Product restored.', 'success'); loadPpArchive(); loadPpItems(); }
+  else showToast('Failed to restore.', 'error');
+}
+
+document.getElementById('pp-modal').addEventListener('click', e => { if (e.target===document.getElementById('pp-modal')) closePpModal(); });
+document.getElementById('pp-conf-overlay').addEventListener('click', e => { if (e.target===document.getElementById('pp-conf-overlay')) closePpConf(); });
+document.getElementById('tx-modal').addEventListener('click', e => { if (e.target===document.getElementById('tx-modal')) closeTxModal(); });
+document.getElementById('sc-add-modal').addEventListener('click', e => { if (e.target===document.getElementById('sc-add-modal')) closeScAddModal(); });
+document.getElementById('modal-overlay').addEventListener('click', e => { if (e.target===document.getElementById('modal-overlay')) closeModal(); });
+document.getElementById('sc-item-modal').addEventListener('click', e => { if (e.target===document.getElementById('sc-item-modal')) closeScItemModal(); });
+document.getElementById('sc-take-modal').addEventListener('click', e => { if (e.target===document.getElementById('sc-take-modal')) closeScTakeModal(); });
+document.getElementById('det-overlay').addEventListener('click', e => { if (e.target===document.getElementById('det-overlay')) closeDet(); });
+document.getElementById('conf-overlay').addEventListener('click', e => { if (e.target===document.getElementById('conf-overlay')) closeConf(); });
+document.getElementById('sc-conf-overlay').addEventListener('click', e => { if (e.target===document.getElementById('sc-conf-overlay')) closeScConf(); });
+
+// ══════════════════════════════════════════════════════════════
+// COMPUTER PERIPHERALS
+// ══════════════════════════════════════════════════════════════
+
+let cpEditingId = null, allCpItems = [], allCpLogEntries = [];
+let cpLogTypeFilter = '', cpLogPage = 1;
+const CP_LOG_PAGE_SIZE = 15;
+
+function showCpTab(tab) {
+  ['inventory','archive','log'].forEach(t => {
+    document.getElementById(`cp-tab-${t}`).classList.toggle('hidden', t !== tab);
+    document.getElementById(`cpt-${t}`).classList.toggle('active', t === tab);
+  });
+  document.getElementById('cp-add-item-btn').classList.toggle('hidden', tab !== 'inventory');
+  if (tab === 'archive') loadCpArchive();
+  if (tab === 'log') loadCpTakes();
+}
+
+async function loadCpStats() {
+  const r = await fetch('/api/cp/stats'), s = await r.json();
+  document.getElementById('cp-st-items').textContent = s.total_items;
+  document.getElementById('cp-st-qty').textContent = s.total_qty.toLocaleString();
+  document.getElementById('cp-st-value').textContent = fmtPeso(s.total_value);
+  document.getElementById('cp-st-month').textContent = fmtPeso(s.value_taken_month);
+}
+
+async function loadCpItems() {
+  document.getElementById('cp-tbody').innerHTML = '<tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res = await fetch('/api/cp/items');
+  allCpItems = await res.json();
+  // populate type filter dropdown
+  const sel = document.getElementById('cp-type-filter');
+  if (sel) {
+    const typeRes = await fetch('/api/cp/types');
+    const types = await typeRes.json();
+    const current = sel.value;
+    sel.innerHTML = '<option value="">All Types</option>' +
+      types.map(t => `<option value="${esc(t)}"${t===current?' selected':''}>${esc(t)}</option>`).join('');
+  }
+  filterCpItems();
+}
+
+function filterCpItems() {
+  const q = (document.getElementById('cp-search')?.value || '').toLowerCase().trim();
+  const t = (document.getElementById('cp-type-filter')?.value || '').toLowerCase().trim();
+  renderCpItems(allCpItems.filter(i =>
+    (!q || i.name.toLowerCase().includes(q) || (i.type||'').toLowerCase().includes(q)) &&
+    (!t || (i.type||'').toLowerCase() === t)
+  ));
+}
+
+function renderCpItems(items) {
+  const tbody = document.getElementById('cp-tbody');
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <p>No items found.</p></div></td></tr>`; return;
+  }
+  tbody.innerHTML = items.map(item => {
+    const qtyClass = item.qty === 0 ? 'qty-zero' : item.qty < 10 ? 'qty-low' : '';
+    return `<tr>
+      <td><div class="td-name">${esc(item.name)}</div></td>
+      <td><span class="chip">${esc(item.type)}</span></td>
+      <td><span class="qty-badge ${qtyClass}">${item.qty.toLocaleString()}</span></td>
+      <td class="td-mono">${fmtPeso(item.price)}</td>
+      <td class="td-mono" style="color:var(--green)">${fmtPeso(item.qty * item.price)}</td>
+      <td><div class="row-actions">
+        <button class="sc-act-btn sc-btn-add" onclick="openCpAddModal(${item.id},'${esc(item.name)}',${item.price})">Add</button>
+        <button class="sc-act-btn sc-btn-take" onclick="openCpTakeModal(${item.id},'${esc(item.name)}',${item.qty},${item.price})" ${item.qty===0?'disabled':''}>Take</button>
+        <button class="sc-act-btn sc-btn-edit" onclick="openCpEditModal(${item.id},'${esc(item.name)}','${esc(item.type)}',${item.price})">Edit</button>
+        <button class="sc-act-btn sc-btn-del" onclick="confirmCpHide(${item.id})">Hide</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ITEM MODAL
+function openCpItemModal() {
+  cpEditingId = null;
+  document.getElementById('cp-item-modal-title').textContent = 'Add Item';
+  ['cp-f-name','cp-f-size','cp-f-qty','cp-f-price'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cp-qty-row').style.display = '';
+  document.getElementById('cp-item-modal').classList.add('open');
+}
+function openCpEditModal(id, name, size, price) {
+  cpEditingId = id;
+  document.getElementById('cp-item-modal-title').textContent = 'Edit Item';
+  document.getElementById('cp-f-name').value = name;
+  document.getElementById('cp-f-size').value = size;
+  document.getElementById('cp-f-price').value = price;
+  document.getElementById('cp-qty-row').style.display = 'none';
+  document.getElementById('cp-item-modal').classList.add('open');
+}
+function closeCpItemModal() { document.getElementById('cp-item-modal').classList.remove('open'); cpEditingId = null; }
+async function saveCpItem() {
+  const name = document.getElementById('cp-f-name').value.trim();
+  const type = document.getElementById('cp-f-size').value.trim();
+  const price = parseFloat(document.getElementById('cp-f-price').value);
+  if (!name || isNaN(price)) { showToast('Please fill in all fields.','error'); return; }
+  let payload, url, method;
+  if (cpEditingId) {
+    payload = {name, type, price}; url = `/api/cp/items/${cpEditingId}`; method = 'PUT';
+  } else {
+    const qty = parseInt(document.getElementById('cp-f-qty').value);
+    if (isNaN(qty)||qty<0) { showToast('Enter a valid quantity.','error'); return; }
+    payload = {name, type, qty, price}; url = '/api/cp/items'; method = 'POST';
+  }
+  const res = await fetch(url, {method, headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+  if (res.ok) { closeCpItemModal(); showToast(cpEditingId?'Item updated.':'Item added.','success'); loadCpItems(); loadCpStats(); }
+  else { const e = await res.json(); showToast(e.error||'Failed.','error'); }
+}
+
+// ADD STOCK MODAL
+let cpAddItem = null;
+function openCpAddModal(id, name, price) {
+  cpAddItem = {id, name, price};
+  document.getElementById('cp-add-item-info').innerHTML = `
+    <div class="take-info-row"><span class="take-info-label">Item</span><span class="take-info-val">${esc(name)}</span></div>
+    <div class="take-info-row"><span class="take-info-label">Unit Price</span><span class="take-info-val">${fmtPeso(price)}</span></div>`;
+  document.getElementById('cp-add-qty').value = '1';
+  document.getElementById('cp-add-preview').innerHTML = '';
+  document.getElementById('cp-add-modal').classList.add('open');
+  document.getElementById('cp-add-qty').oninput = updateCpAddPreview;
+  updateCpAddPreview();
+}
+function closeCpAddModal() { document.getElementById('cp-add-modal').classList.remove('open'); cpAddItem = null; }
+function updateCpAddPreview() {
+  if (!cpAddItem) return;
+  const qty = parseInt(document.getElementById('cp-add-qty').value)||0;
+  document.getElementById('cp-add-preview').innerHTML = qty>0
+    ? `<div class="take-preview-line"><span>Total Value Added</span><span style="color:var(--green);font-weight:700">${fmtPeso(qty*cpAddItem.price)}</span></div>`
+    : '';
+}
+async function confirmCpAdd() {
+  if (!cpAddItem) return;
+  const qty = parseInt(document.getElementById('cp-add-qty').value);
+  if (!qty||qty<=0) { showToast('Enter a valid quantity.','error'); return; }
+  const res = await fetch('/api/cp/add', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({item_id:cpAddItem.id,qty})});
+  if (res.ok) { closeCpAddModal(); showToast(`Added ${qty} pcs.`,'success'); loadCpItems(); loadCpStats(); if (document.getElementById('cpt-log').classList.contains('active')) loadCpTakes(); }
+  else { const e=await res.json(); showToast(e.error||'Failed.','error'); }
+}
+
+// TAKE MODAL
+let cpTakeItem = null;
+function openCpTakeModal(id, name, qty, price) {
+  cpTakeItem = {id, name, qty, price};
+  document.getElementById('cp-take-item-info').innerHTML = `
+    <div class="take-info-row"><span class="take-info-label">Item</span><span class="take-info-val">${esc(name)}</span></div>
+    <div class="take-info-row"><span class="take-info-label">In Stock</span><span class="take-info-val" style="color:var(--green)">${qty} pcs</span></div>
+    <div class="take-info-row"><span class="take-info-label">Unit Price</span><span class="take-info-val">${fmtPeso(price)}</span></div>`;
+  document.getElementById('cp-take-qty').value = '1';
+  document.getElementById('cp-take-preview').innerHTML = '';
+  document.getElementById('cp-take-modal').classList.add('open');
+  document.getElementById('cp-take-qty').oninput = updateCpTakePreview;
+  updateCpTakePreview();
+}
+function closeCpTakeModal() { document.getElementById('cp-take-modal').classList.remove('open'); cpTakeItem = null; }
+function updateCpTakePreview() {
+  if (!cpTakeItem) return;
+  const qty = parseInt(document.getElementById('cp-take-qty').value)||0;
+  const el = document.getElementById('cp-take-preview');
+  if (qty>0&&qty<=cpTakeItem.qty)
+    el.innerHTML = `<div class="take-preview-line"><span>Total Cost</span><span style="color:var(--yellow);font-weight:700">${fmtPeso(qty*cpTakeItem.price)}</span></div><div class="take-preview-line" style="font-size:0.78rem;color:var(--text3)"><span>Remaining after</span><span>${cpTakeItem.qty-qty} pcs</span></div>`;
+  else if (qty>cpTakeItem.qty)
+    el.innerHTML = `<div style="color:var(--red);font-size:0.83rem;margin-top:8px">Exceeds available stock</div>`;
+  else el.innerHTML = '';
+}
+async function confirmCpTake() {
+  if (!cpTakeItem) return;
+  const qty = parseInt(document.getElementById('cp-take-qty').value);
+  if (!qty||qty<=0) { showToast('Enter a valid quantity.','error'); return; }
+  if (qty>cpTakeItem.qty) { showToast('Not enough stock.','error'); return; }
+  const res = await fetch('/api/cp/take', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({item_id:cpTakeItem.id,qty})});
+  if (res.ok) { const d=await res.json(); closeCpTakeModal(); showToast(`Taken ${qty} pcs — ${fmtPeso(d.total_price)} total`,'success'); loadCpItems(); loadCpStats(); if (document.getElementById('cpt-log').classList.contains('active')) loadCpTakes(); }
+  else { const e=await res.json(); showToast(e.error||'Failed.','error'); }
+}
+
+// HIDE
+function confirmCpHide(id) {
+  document.getElementById('cp-conf-overlay').classList.add('open');
+  document.getElementById('cp-conf-ok').onclick = () => doCpHide(id);
+}
+function closeCpConf() { document.getElementById('cp-conf-overlay').classList.remove('open'); }
+async function doCpHide(id) {
+  closeCpConf();
+  const res = await fetch(`/api/cp/items/${id}`, {method:'DELETE'});
+  if (res.ok) {
+    showToast('Item hidden.','success'); loadCpItems(); loadCpStats();
+    fetch('/api/cp/archived').then(r=>r.json()).then(items=>{
+      const b=document.getElementById('cpt-archive-badge');
+      if(items.length){b.textContent=items.length;b.classList.remove('hidden');}else b.classList.add('hidden');
+    });
+  } else showToast('Failed.','error');
+}
+
+// ARCHIVE
+async function loadCpArchive() {
+  const tbody=document.getElementById('cp-archive-tbody');
+  tbody.innerHTML='<tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res=await fetch('/api/cp/archived'); const items=await res.json();
+  const b=document.getElementById('cpt-archive-badge');
+  if(items.length){b.textContent=items.length;b.classList.remove('hidden');}else b.classList.add('hidden');
+  if(!items.length){tbody.innerHTML=`<tr><td colspan="5"><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg><p>No archived items.</p></div></td></tr>`;return;}
+  tbody.innerHTML=items.map(i=>`<tr>
+    <td><div class="td-name">${esc(i.name)}</div></td>
+    <td><span class="chip">${esc(i.type)}</span></td>
+    <td class="td-mono" style="color:var(--text3)">${i.qty}</td>
+    <td class="td-mono">${fmtPeso(i.price)}</td>
+    <td><button class="sc-act-btn sc-btn-restore" onclick="restoreCpItem(${i.id})">Restore</button></td>
+  </tr>`).join('');
+}
+async function restoreCpItem(id) {
+  const res=await fetch(`/api/cp/items/${id}/restore`,{method:'POST'});
+  if(res.ok){showToast('Item restored.','success');loadCpArchive();loadCpItems();loadCpStats();}
+  else showToast('Failed.','error');
+}
+
+// ACTIVITY LOG
+async function loadCpTakes() {
+  document.getElementById('cp-takes-tbody').innerHTML='<tr><td colspan="8"><div class="loading"><div class="spinner"></div></div></td></tr>';
+  const res=await fetch('/api/cp/takes'); allCpLogEntries=await res.json(); cpLogPage=1; renderCpLog();
+}
+function setCpLogType(type) {
+  cpLogTypeFilter=type; cpLogPage=1;
+  ['cp-lf-all','cp-lf-add','cp-lf-take'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById({'':'cp-lf-all','add':'cp-lf-add','take':'cp-lf-take'}[type]).classList.add('active');
+  renderCpLog();
+}
+function onCpLogPeriodChange() {
+  document.getElementById('cp-log-custom-range').classList.toggle('hidden', document.getElementById('cp-log-period').value!=='custom');
+  cpLogPage=1; renderCpLog();
+}
+function getCpLogDateRange() {
+  const p=document.getElementById('cp-log-period').value, now=new Date();
+  if(p==='today'){const d=now.toISOString().split('T')[0];return{from:d,to:d};}
+  if(p==='week'){const day=now.getDay(),mon=new Date(now);mon.setDate(now.getDate()-((day+6)%7));const sun=new Date(mon);sun.setDate(mon.getDate()+6);return{from:mon.toISOString().split('T')[0],to:sun.toISOString().split('T')[0]};}
+  if(p==='month'){return{from:`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`,to:now.toISOString().split('T')[0]};}
+  if(p==='custom'){return{from:document.getElementById('cp-log-date-from').value||null,to:document.getElementById('cp-log-date-to').value||null};}
+  return{from:null,to:null};
+}
+function renderCpLog() {
+  const tbody=document.getElementById('cp-takes-tbody');
+  const {from,to}=getCpLogDateRange();
+  const entries=allCpLogEntries.filter(t=>{
+    if(cpLogTypeFilter&&t.type!==cpLogTypeFilter)return false;
+    const d=(t.event_at||'').split('T')[0].split(' ')[0];
+    if(from&&d<from)return false; if(to&&d>to)return false; return true;
+  });
+  const total=entries.length, totalPages=Math.max(1,Math.ceil(total/CP_LOG_PAGE_SIZE));
+  if(cpLogPage>totalPages)cpLogPage=totalPages;
+  const start=(cpLogPage-1)*CP_LOG_PAGE_SIZE, page=entries.slice(start,start+CP_LOG_PAGE_SIZE);
+  if(!page.length){tbody.innerHTML=`<tr><td colspan="8"><div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/><polyline points="16 6 12 2 8 6"/></svg><p>No matching activity.</p></div></td></tr>`;document.getElementById('cp-log-pagination').innerHTML='';return;}
+  tbody.innerHTML=page.map(t=>{
+    const isAdd=t.type==='add';
+    return `<tr>
+      <td>${isAdd?'<span class="badge b-active" style="min-width:52px;justify-content:center">Add</span>':'<span class="badge b-soon" style="min-width:52px;justify-content:center">Take</span>'}</td>
+      <td><div class="td-name">${esc(t.item_name)}</div></td>
+      <td><span class="chip">${esc(t.item_type||'—')}</span></td>
+      <td class="td-mono">${t.qty}</td>
+      <td class="td-mono">${fmtPeso(t.unit_price)}</td>
+      <td class="td-mono" style="color:${isAdd?'var(--green)':'var(--yellow)'}">${fmtPeso(t.total_price)}</td>
+      <td class="td-mono" style="font-size:0.78rem;color:var(--text3)">${fmtDateTime(t.event_at)}</td>
+      <td><div class="row-actions" style="gap:4px">
+        <button class="sc-act-btn sc-btn-restore" onclick="undoCpLogEntry('${t.type}',${t.id})">Undo</button>
+        <button class="sc-act-btn sc-btn-del" onclick="removeCpLogEntry('${t.type}',${t.id})">Remove</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  const pg=document.getElementById('cp-log-pagination');
+  if(totalPages<=1){pg.innerHTML='';return;}
+  let pages=[];
+  for(let i=1;i<=totalPages;i++)if(i===1||i===totalPages||(i>=cpLogPage-2&&i<=cpLogPage+2))pages.push(i);
+  let html=`<div class="pg-info">${start+1}–${Math.min(start+CP_LOG_PAGE_SIZE,total)} of ${total}</div><div class="pg-btns">`;
+  html+=`<button class="pg-btn" onclick="goCpLogPage(${cpLogPage-1})" ${cpLogPage===1?'disabled':''}>‹</button>`;
+  let prev=null;
+  for(const p of pages){if(prev!==null&&p-prev>1)html+=`<span class="pg-ellipsis">…</span>`;html+=`<button class="pg-btn ${p===cpLogPage?'pg-active':''}" onclick="goCpLogPage(${p})">${p}</button>`;prev=p;}
+  html+=`<button class="pg-btn" onclick="goCpLogPage(${cpLogPage+1})" ${cpLogPage===totalPages?'disabled':''}>›</button></div>`;
+  pg.innerHTML=html;
+}
+function goCpLogPage(p){const tp=Math.max(1,Math.ceil(allCpLogEntries.length/CP_LOG_PAGE_SIZE));if(p<1||p>tp)return;cpLogPage=p;renderCpLog();}
+async function undoCpLogEntry(type,id){
+  const ep=type==='add'?`/api/cp/adds/${id}`:`/api/cp/takes/${id}`;
+  const res=await fetch(ep,{method:'DELETE'});
+  if(res.ok){allCpLogEntries=allCpLogEntries.filter(e=>!(e.type===type&&e.id===id));renderCpLog();showToast('Entry undone and stock updated.','success');loadCpItems();loadCpStats();}
+  else showToast('Failed.','error');
+}
+async function removeCpLogEntry(type,id){
+  const ep=type==='add'?`/api/cp/adds/${id}/remove`:`/api/cp/takes/${id}/remove`;
+  const res=await fetch(ep,{method:'DELETE'});
+  if(res.ok){allCpLogEntries=allCpLogEntries.filter(e=>!(e.type===type&&e.id===id));renderCpLog();showToast('Log entry removed.','success');loadCpStats();}
+  else showToast('Failed.','error');
+}
+
+// CP BACKDROP LISTENERS
+document.getElementById('cp-item-modal').addEventListener('click',e=>{if(e.target===document.getElementById('cp-item-modal'))closeCpItemModal();});
+document.getElementById('cp-add-modal').addEventListener('click',e=>{if(e.target===document.getElementById('cp-add-modal'))closeCpAddModal();});
+document.getElementById('cp-take-modal').addEventListener('click',e=>{if(e.target===document.getElementById('cp-take-modal'))closeCpTakeModal();});
+document.getElementById('cp-conf-overlay').addEventListener('click',e=>{if(e.target===document.getElementById('cp-conf-overlay'))closeCpConf();});
+
+</script>
+</body>
+</html>
